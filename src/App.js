@@ -1,50 +1,38 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
+import React from "react";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css"
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
+function Game() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  let initialName = "";
+  if (location.state) {
+    initialName = location.state.name
+  }
+  const [name, setName] = useState(initialName);
+
+  const startGame = () => {
+    navigate("/question", {state: {name: name}});
   }
 
-  handleClick = api => e => {
-    e.preventDefault()
+  return (
+    <div>
+      <input value={name} onChange={e => setName(e.target.value)}/>
+      <button className="btn-gradient" onClick={() => startGame()}>Start</button>
+    </div>
+  );
+}
 
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
-  }
-
-  render() {
-    const { loading, msg } = this.state
-
-    return (
+function App() {
+  return (
+    <div className="game">
       <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
+        Enter your name:
       </p>
-    )
-  }
+      <Game />
+    </div>
+  );
 }
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
-      </div>
-    )
-  }
-}
-
-export default App
+export default App;
