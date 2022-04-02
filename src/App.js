@@ -19,7 +19,7 @@ function Game() {
   return (
     <div>
       <input value={name} onChange={e => setName(e.target.value)}/>
-      <button className="btn-gradient" onClick={() => startGame()}>Start</button>
+      <p><button className="attractive-btn" onClick={() => startGame()}>START</button></p>
     </div>
   );
 }
