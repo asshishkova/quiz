@@ -1,0 +1,45 @@
+.fire {
+  color: #f6513f;
+  /* color: linear-gradient(-45deg, #f66a3f, #f4af55); */
+}
+
+.card-btn {
+  font-size: 20px;
+  margin: 10px;
+  /* padding: 10px; */
+  min-width: 200px;
+  min-height: 100px;
+  background: linear-gradient(-45deg, #f66a3f, #f4af55);
+  background-size: 400% 400%;
+  animation: gradient 5s ease infinite;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out 0s;
+
+}
+.card-btn:hover {
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 1);
+  background-size: 100% 100%;
+}
+
+.card-btn:active {
+  box-shadow: none;
+  background-size: 100% 100%;
+}
+
+li{
+  display: inline;
+}
+
+ol {
+  padding: 0px 0px 0px 0px;
+}
+
+.question {
+  min-width: 200px;
+  max-width: 600px;
+  min-height: 100px;
+  max-height: 400px;
+  background-color: aqua;
+  /* opacity: 0.3; */
+}

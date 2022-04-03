@@ -20,15 +20,9 @@ input {
 
 button {
   cursor: pointer;
-  font-size: 20px;
-  margin: 10px;
 }
 
-ol li{
-  display: inline;
-}
-
-.attractive-btn {
+.orange-btn {
   min-width: 200px;
   min-height: 60px;
   font-size: 30px;
@@ -43,12 +37,12 @@ ol li{
   margin: 20px;
   }
 
-.attractive-btn:hover, .attractive-btn:focus {
+.orange-btn:hover, .orange-btn:focus {
   box-shadow: none;
   transform: translateY(6px);
 }
 
-.attractive-btn::after {
+.orange-btn::after {
   content: '';
   width: 30px; height: 30px;
   border-radius: 100%;
@@ -60,13 +54,17 @@ ol li{
   transform: translate(-50%, -50%);
 }
 
-.attractive-btn:hover::after, .attractive-btn:focus::after {
+.orange-btn:active {
+  font-weight: bold;
+}
+
+.orange-btn:hover::after, .orange-btn:focus::after {
   animation: none;
   display: none;
   box-shadow: none;
 }
 
-.attractive-btn:active:after {
+.orange-btn:active:after {
   background: transparent;
 }
 
@@ -76,19 +74,19 @@ html, body {
 }
 
 body {
-    background: linear-gradient(-45deg, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradient 5s ease infinite;
+  background: linear-gradient(-45deg, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 5s ease infinite;
 }
 
 @keyframes gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
 }

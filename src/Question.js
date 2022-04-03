@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import ReactHtmlParser from 'react-html-parser';
+import { GiFire } from 'react-icons/gi';
+import "./Question.css"
+
 
 function Question() {
   const [questions, setQuestions] = useState({results: []});
@@ -39,14 +42,19 @@ function Question() {
 
   return (
     <div className="game">
-      <p>Good luck {location.state.name}</p>
-      <h3>{ReactHtmlParser(currentQuestion.question)}</h3>
-      <ol>
-        {answers.map(answer => (
-          <li><button onClick={() => nextQuestion(questionIndex + 1)}>{ReactHtmlParser(answer)}</button></li>
-        ))}
-      </ol>
-      <button onClick={() => navigate("/", location)}>back</button>
+      <div className="question">
+        <p>Good luck {location.state.name}</p>
+        <p>
+          Question {questionIndex + 1}/{questions.length} <span className="fire"><GiFire Frame/></span>
+        </p>
+        <p>{ReactHtmlParser(currentQuestion.question)}</p>
+        <ol>
+          {answers.map(answer => (
+            <li><button className="card-btn" onClick={() => nextQuestion(questionIndex + 1)}>{ReactHtmlParser(answer)}</button></li>
+          ))}
+        </ol>
+        <button onClick={() => navigate("/", location)}>back</button>
+      </div>
     </div>
   )
 }
