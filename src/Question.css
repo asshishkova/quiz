@@ -59,12 +59,23 @@ ol {
 }
 
 .question {
+  position: relative;
   padding: 20px;
   min-width: 200px;
   max-width: 1000px;
-  /* min-height: 100px;
-  max-height: 400px; */
-  /* background-color: hsla(166, 100%, 50%, 0.1) ; */
-  /* opacity: 0.3; */
   border-radius: 12px;
+}
+
+.question:after {
+  content: "";
+  background: url('https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?ixid=MnwzMTU4Njl8MHwxfHNlYXJjaHwxfHxFbnRlcnRhaW5tZW50JTNBJTIwVmlkZW8lMjBHYW1lc3xlbnwwfDB8fHwxNjQ5MDI0OTM1&ixlib=rb-1.2.1') no-repeat center center;
+  position: absolute;
+  top:0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.3; /* Here is your opacity */
+  border-radius: 12px;
+  background-size: cover;
 }
