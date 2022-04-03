@@ -14,15 +14,17 @@ function Question() {
   const [answers, setAnswers] = useState([]);
 
   useEffect(() => {
-    axios.get("https://opentdb.com/api.php?amount=10").then((response) => {
-      const questions = response.data.results;
+    fetch("/.netlify/functions/async-getquestions")
+    .then(response => response.json())
+    .then(response => {
+      const questions = response.results;
       const questionIndex = 0;
       const currentQuestion = questions[questionIndex];
       const answers = [currentQuestion.correct_answer].concat(currentQuestion.incorrect_answers);
       setCurrentQuestion(currentQuestion);
       setAnswers(answers);
       setQuestions(questions);
-    });
+    })
   }, []);
 
   const navigate = useNavigate();
