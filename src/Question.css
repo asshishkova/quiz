@@ -1,6 +1,5 @@
 .fire {
   color: #f6513f;
-  /* color: linear-gradient(-45deg, #f66a3f, #f4af55); */
 }
 
 .card-btn {
@@ -41,10 +40,9 @@ ol {
 }
 
 .growing {
-  animation: growth 1s 4;
+  animation: growth 1s infinite;
   animation-fill-mode: backwards;
   color: #f66a3f;
-  /* text-shadow: #313133; */
   text-shadow: 0px 8px 15px #313133;
   font-size: 400px;
   line-height: 400px;
@@ -60,11 +58,13 @@ ol {
   }
 }
 
-/* .question {
+.question {
+  padding: 20px;
   min-width: 200px;
-  max-width: 600px;
-  min-height: 100px;
-  max-height: 400px;
-  background-color: aqua;
-  opacity: 0.3;
-} */
+  max-width: 1000px;
+  /* min-height: 100px;
+  max-height: 400px; */
+  /* background-color: hsla(166, 100%, 50%, 0.1) ; */
+  /* opacity: 0.3; */
+  border-radius: 12px;
+}
