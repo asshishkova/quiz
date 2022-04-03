@@ -41,7 +41,7 @@ ol {
 }
 
 .growing {
-  animation: growth 0.5s;
+  animation: growth 1s 4;
   animation-fill-mode: backwards;
   color: #f66a3f;
   /* text-shadow: #313133; */

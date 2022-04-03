@@ -42,15 +42,19 @@ function Question() {
     }
   }
 
-  useEffect(() => {
-    if (counter > 0) {
-      const intervalId = setInterval(() => {
-        setCounter(counter - 1);
-      }, 1000);
+  // useEffect(() => {
+  //   if (counter > 0) {
+  //     const intervalId = setInterval(() => {
+  //       setCounter(counter - 1);
+  //     }, 1000);
 
-      return () => clearInterval(intervalId);
-    }
-  }, [counter]);
+  //     return () => clearInterval(intervalId);
+  //   }
+  // }, [counter]);
+
+  const onAnimationIteration = () => {
+    setCounter(counter - 1);
+  };
 
   return (
     <div className="game">
@@ -78,21 +82,12 @@ function Question() {
           )
         } else {
           return (
-            <p className="growing">{counter}</p>
+            <p onAnimationIteration={onAnimationIteration} className="growing">{counter}</p>
           )
         }
       })()}
     </div>
   )
 }
-
-// else {
-//   return (
-//     <div>
-//       <h1>{timeLeft / 1000}</h1>
-//       <button onClick={() => actions.start()}>start</button>
-//     </div>
-//   )
-// }
 
 export default Question;
