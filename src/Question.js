@@ -5,13 +5,15 @@ import ReactHtmlParser from 'react-html-parser';
 import { GiFire } from 'react-icons/gi';
 import "./Question.css"
 
+const difficulties = {"easy": 1, "medium": 2, "hard": 3};
+
 function Question() {
   // process.env.REACT_APP_UNSPLASH_API_KEY
   const [questions, setQuestions] = useState({results: []});
   const [questionIndex, setQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState({question: ""});
   const [answers, setAnswers] = useState([]);
-  const [counter, setCounter] = useState(3)
+  const [counter, setCounter] = useState(3);
 
   useEffect(() => {
     fetch("/.netlify/functions/async-getquestions")
@@ -29,9 +31,10 @@ function Question() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const questionsAmount = questions.length;
 
   const nextQuestion = (nextQuestionIndex) => {
-    if (nextQuestionIndex === questions.length) {
+    if (nextQuestionIndex === questionsAmount) {
       navigate("/", location)
     } else {
       const currentQuestion = questions[nextQuestionIndex];
@@ -64,8 +67,10 @@ function Question() {
             <div className="question">
               <p>Good luck {location.state.name}</p>
               <h1>
-                Question {questionIndex + 1}/{questions.length} <span className="fire"><GiFire /></span>
+                Question {questionIndex + 1}/{questionsAmount}
               </h1>
+              <h1>{[...Array(difficulties[currentQuestion.difficulty])].map((e, i) =>
+                  <span className="fire"><GiFire /></span>)}</h1>
               <h1>{ReactHtmlParser(currentQuestion.question)}</h1>
               <ol>
                 {answers.map((answer, i) => (
