@@ -2,6 +2,7 @@
   text-align: center;
   margin-top: 100px;
   color: #313133;
+  font-family: 'Saira', sans-serif;
 }
 
 h1 {
@@ -20,9 +21,10 @@ input {
 
 button {
   cursor: pointer;
+  font-family: 'Saira', sans-serif;
 }
 
-.orange-btn {
+.orange-start-btn {
   min-width: 200px;
   min-height: 60px;
   font-size: 30px;
@@ -35,14 +37,14 @@ button {
   position: relative;
   padding: 10px;
   margin: 20px;
-  }
+}
 
-.orange-btn:hover, .orange-btn:focus {
+.orange-start-btn:hover, .orange-start-btn:focus {
   box-shadow: none;
   transform: translateY(6px);
 }
 
-.orange-btn::after {
+.orange-start-btn::after {
   content: '';
   width: 30px; height: 30px;
   border-radius: 100%;
@@ -54,17 +56,17 @@ button {
   transform: translate(-50%, -50%);
 }
 
-.orange-btn:active {
+.orange-start-btn:active {
   font-weight: bold;
 }
 
-.orange-btn:hover::after, .orange-btn:focus::after {
+.orange-start-btn:hover::after, .orange-start-btn:focus::after {
   animation: none;
   display: none;
   box-shadow: none;
 }
 
-.orange-btn:active:after {
+.orange-start-btn:active:after {
   background: transparent;
 }
 

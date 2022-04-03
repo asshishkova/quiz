@@ -5,12 +5,13 @@ import ReactHtmlParser from 'react-html-parser';
 import { GiFire } from 'react-icons/gi';
 import "./Question.css"
 
-
 function Question() {
+  // process.env.REACT_APP_UNSPLASH_API_KEY
   const [questions, setQuestions] = useState({results: []});
   const [questionIndex, setQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState({question: ""});
   const [answers, setAnswers] = useState([]);
+  const [counter, setCounter] = useState(3)
 
   useEffect(() => {
     fetch("/.netlify/functions/async-getquestions")
@@ -41,23 +42,57 @@ function Question() {
     }
   }
 
+  useEffect(() => {
+    if (counter > 0) {
+      const intervalId = setInterval(() => {
+        setCounter(counter - 1);
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [counter]);
+
   return (
     <div className="game">
-      <div className="question">
-        <p>Good luck {location.state.name}</p>
-        <p>
-          Question {questionIndex + 1}/{questions.length} <span className="fire"><GiFire Frame/></span>
-        </p>
-        <p>{ReactHtmlParser(currentQuestion.question)}</p>
-        <ol>
-          {answers.map(answer => (
-            <li><button className="card-btn" onClick={() => nextQuestion(questionIndex + 1)}>{ReactHtmlParser(answer)}</button></li>
-          ))}
-        </ol>
-        <button onClick={() => navigate("/", location)}>back</button>
-      </div>
+      {(() => {
+        if (counter === 0) {
+          return (
+            <div className="question">
+              <p>Good luck {location.state.name}</p>
+              <h1>
+                Question {questionIndex + 1}/{questions.length} <span className="fire"><GiFire /></span>
+              </h1>
+              <h1>{ReactHtmlParser(currentQuestion.question)}</h1>
+              <ol>
+                {answers.map((answer, i) => (
+                  <li key={i}>
+                    <button
+                      className="card-btn" onClick={() => nextQuestion(questionIndex + 1)}>
+                        <span className="small-numbers">{ i + 1 }.</span> {ReactHtmlParser(answer)}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+              <button onClick={() => navigate("/", location)}>back</button>
+            </div>
+          )
+        } else {
+          return (
+            <p className="growing">{counter}</p>
+          )
+        }
+      })()}
     </div>
   )
 }
+
+// else {
+//   return (
+//     <div>
+//       <h1>{timeLeft / 1000}</h1>
+//       <button onClick={() => actions.start()}>start</button>
+//     </div>
+//   )
+// }
 
 export default Question;
