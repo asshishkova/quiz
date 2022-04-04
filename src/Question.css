@@ -1,19 +1,23 @@
-.fire {
-  color: #f6513f;
-}
-
 .card-btn {
   font-size: 25px;
   margin: 10px;
   padding: 20px;
   min-width: 200px;
   min-height: 100px;
-  background: linear-gradient(-45deg, #f66a3f, #f4af55);
   background-size: 400% 400%;
-  animation: gradient 5s ease infinite;
   border: none;
   border-radius: 12px;
-  transition: all 0.2s ease-in-out 0s;
+}
+
+.regular-card {
+  background: linear-gradient(-45deg, #f66a3f, #f4af55);
+}
+
+.correct-card {
+  background: linear-gradient(-45deg, #35a608, #69f55f);
+}
+.incorrect-card {
+  background: linear-gradient(-45deg, #fa0303, #f75a5a);
 }
 
 .small-numbers {
@@ -62,9 +66,9 @@ ol {
   animation: color 1s infinite;
   animation-fill-mode: backwards;
   color: #f66a3f;
-  text-shadow: 0px 8px 15px #313133;
+  /* text-shadow: 0px 8px 15px #313133; */
   font-size: 25px;
-  line-height: 25px;
+  min-width: 70px;
 }
 
 
@@ -80,10 +84,12 @@ ol {
 .question {
   position: relative;
   padding: 20px;
-  min-width: 200px;
-  max-width: 1000px;
+  /* min-width: 200px; */
+  /* max-width: 1000px; */
+  width: 1000px;
+  height: 600px;
   border-radius: 12px;
-  text-shadow: 0px 5px 15px white;
+  /* text-shadow: 0px 5px 15px white; */
 }
 
 .question:after {
@@ -98,4 +104,31 @@ ol {
   opacity: 0.3; /* Here is your opacity */
   border-radius: 12px;
   background-size: cover;
+}
+
+.game-info {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+
+.left-info {
+  text-align: start;
+}
+
+.center-info {
+  text-align: center;
+}
+
+.right-info {
+  text-align: end;
+}
+
+.start-over {
+  cursor: pointer;
+  font-size: 25px;
+}
+
+.start-over:hover {
+  color: #f66a3f;
 }

@@ -9,7 +9,8 @@ function Score() {
   return (
     <div className="game">
       <div>
-        <h1>Score: {location.state.score}</h1>
+        <h1>Congratulations, {location.state.playerName}</h1>
+        <h1>Your score is {location.state.score}</h1>
         <button className="orange-again-btn" onClick={() => navigate("/", location)}>Again?</button>
       </div>
     </div>
