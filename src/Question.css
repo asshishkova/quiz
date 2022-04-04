@@ -62,7 +62,7 @@ ol {
   }
 }
 
-.seconds {
+.blinking {
   animation: color 1s infinite;
   animation-fill-mode: backwards;
   color: #f66a3f;

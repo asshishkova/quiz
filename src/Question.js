@@ -1,14 +1,24 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
 import { FaUndo } from 'react-icons/fa';
-import "./Question.css"
+import "./Question.css";
+import ReactCanvasConfetti from "react-canvas-confetti";
 
 const difficulties = {"easy": 1, "medium": 2, "hard": 3};
-const secondsForAnswer = 15;
-const defaultTimerClassName = "seconds";
+const secondsForAnswer = 3;
+const defaultTimerClassName = "blinking" ;
 const defaultAnswerClassName = "card-btn regular-card";
+const defaultDisabledButton = false;
+
+const canvasStyles = {
+  position: "fixed",
+  pointerEvents: "none",
+  width: "100%",
+  height: "100%",
+  top: 0,
+  left: 0
+};
 
 function buildAnswers(currentQuestion) {
   const correctAnswer = {
@@ -34,6 +44,50 @@ function buildAnswers(currentQuestion) {
 }
 
 function Question() {
+  const refAnimationInstance = useRef(null);
+
+  const getInstance = useCallback((instance) => {
+    refAnimationInstance.current = instance;
+  }, []);
+
+  const makeShot = useCallback((particleRatio, opts) => {
+    refAnimationInstance.current &&
+      refAnimationInstance.current({
+        ...opts,
+        origin: { y: 0.7 },
+        particleCount: Math.floor(200 * particleRatio)
+      });
+  }, []);
+
+  const fire = useCallback(() => {
+    makeShot(0.25, {
+      spread: 26,
+      startVelocity: 55
+    });
+
+    makeShot(0.2, {
+      spread: 60
+    });
+
+    makeShot(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8
+    });
+
+    makeShot(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2
+    });
+
+    makeShot(0.1, {
+      spread: 120,
+      startVelocity: 45
+    });
+  }, [makeShot]);
+
   // process.env.REACT_APP_UNSPLASH_API_KEY
   const [questions, setQuestions] = useState({results: []});
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -42,6 +96,7 @@ function Question() {
   const [startGameCounter, setStartGameCounter] = useState(3);
   const [timer, setTimer] = useState(secondsForAnswer);
   const [timerClassName, setTimerClassName] = useState(defaultTimerClassName);
+  const [disabledButton, setDisabledButton] = useState(defaultDisabledButton);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -68,21 +123,29 @@ function Question() {
   }
 
   const answerClicked = (answer) => {
+    setDisabledButton(true);
     let updatedAnswers = answers;
     setTimerClassName("");
     if (answer.correct) {
+      fire()
       setScore(score + timer * difficulties[currentQuestion.difficulty]);
       updatedAnswers[answer.index].class = "card-btn correct-card";
     } else if (answer.index >= 0) {
       updatedAnswers[answer.index].class = "card-btn incorrect-card";
     }
-    setAnswers(updatedAnswers)
+    setAnswers(updatedAnswers);
     setTimeout(() => {
-      nextQuestion();
+      if (refAnimationInstance.current) {
+        if (answer.correct) {
+          refAnimationInstance.current.reset();
+        }
+        nextQuestion();
+      }
     }, 2000);
   }
 
   const nextQuestion = () => {
+    setDisabledButton(false);
     setTimer(secondsForAnswer);
     setTimerClassName(defaultTimerClassName);
     const nextQuestionIndex = questionIndex + 1;
@@ -97,15 +160,20 @@ function Question() {
     }
   }
 
+  const startOver = () => {
+    navigate("/", location)
+  }
+
   const onAnimationIteration = () => {
     setStartGameCounter(startGameCounter - 1);
   };
 
   const onTimerAnimationIteration = () => {
-    if (timer === 0) {
-      answerClicked({text: "", correct: false, index: -1});
-    } else {
+    if (timer > 0) {
       setTimer(timer - 1);
+    }
+    if (timer === 1) {
+      answerClicked({text: "", correct: false, index: -1});
     }
   };
 
@@ -125,18 +193,22 @@ function Question() {
                 <div className="center-info">
                   <p>Score: {score}</p>
                   <p onAnimationIteration={onTimerAnimationIteration} className={timerClassName}>{timer}</p>
+                  <ReactCanvasConfetti refConfetti={getInstance} style={canvasStyles} />
                 </div>
                 <div className="right-info">
                   <p>
-                    <FaUndo className="start-over" title="Start over" onClick={() => navigate("/", location)}/>
+                    <FaUndo className="start-over" title="Start over" onClick={() => startOver()}/>
                   </p>
+                  {timer === 0 &&
+                    <p className="blinking" >Time's up</p>
+                  }
                 </div>
               </div>
               <h1>{ReactHtmlParser(currentQuestion.question)}</h1>
               <ol>
                 {answers.map((answer, i) => (
                   <li key={i}>
-                    <button
+                    <button disabled={disabledButton}
                       className={answer.class} onClick={() => answerClicked(answer)}>
                         <span className="small-numbers">{ i + 1 }.</span> {ReactHtmlParser(answer.text)}
                     </button>
