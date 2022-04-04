@@ -1,0 +1,15 @@
+.orange-again-btn {
+  min-width: 200px;
+  min-height: 60px;
+  font-size: 30px;
+  background: #f49755;
+  border: none;
+  border-radius: 12px;
+  outline: none;
+  padding: 10px;
+  margin: 20px;
+}
+
+.orange-again-btn:hover {
+  font-weight: bold;
+}

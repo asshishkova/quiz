@@ -69,7 +69,7 @@ ol {
 
 .question:after {
   content: "";
-  background: url('https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?ixid=MnwzMTU4Njl8MHwxfHNlYXJjaHwxfHxFbnRlcnRhaW5tZW50JTNBJTIwVmlkZW8lMjBHYW1lc3xlbnwwfDB8fHwxNjQ5MDI0OTM1&ixlib=rb-1.2.1') no-repeat center center;
+  /* background: url('https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?ixid=MnwzMTU4Njl8MHwxfHNlYXJjaHwxfHxFbnRlcnRhaW5tZW50JTNBJTIwVmlkZW8lMjBHYW1lc3xlbnwwfDB8fHwxNjQ5MDI0OTM1&ixlib=rb-1.2.1') no-repeat center center; */
   position: absolute;
   top:0px;
   left: 0px;
