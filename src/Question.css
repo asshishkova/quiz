@@ -58,6 +58,25 @@ ol {
   }
 }
 
+.seconds {
+  animation: color 1s infinite;
+  animation-fill-mode: backwards;
+  color: #f66a3f;
+  text-shadow: 0px 8px 15px #313133;
+  font-size: 25px;
+  line-height: 25px;
+}
+
+
+@keyframes color {
+  0% {
+    color: #f66a3f;
+  }
+  100% {
+    color: #313133;
+  }
+}
+
 .question {
   position: relative;
   padding: 20px;

@@ -6,6 +6,7 @@ import { GiFire } from 'react-icons/gi';
 import "./Question.css"
 
 const difficulties = {"easy": 1, "medium": 2, "hard": 3};
+const secondsForAnswer = 60;
 
 function buildAnswers(currentQuestion) {
   const correctAnswer = {
@@ -21,7 +22,7 @@ function buildAnswers(currentQuestion) {
   });
   const randomIndex = Math.floor(Math.random() * answers.length)
   answers.splice(randomIndex, 0, correctAnswer);
-  // console.log(randomIndex);
+  console.log(randomIndex + 1);
   return answers;
 }
 
@@ -31,7 +32,8 @@ function Question() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState({question: ""});
   const [answers, setAnswers] = useState([]);
-  const [counter, setCounter] = useState(3);
+  const [startGameCounter, setStartGameCounter] = useState(3);
+  const [timer, setTimer] = useState(secondsForAnswer);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -53,9 +55,10 @@ function Question() {
   const questionsAmount = questions.length;
 
   const nextQuestion = (answer) => {
+    setTimer(secondsForAnswer);
     const nextQuestionIndex = questionIndex + 1;
     if (answer.correct) {
-      setScore(score + 1);
+      setScore(score + timer * difficulties[currentQuestion.difficulty]);
     }
     if (nextQuestionIndex === questionsAmount) {
       navigate("/score", {state: {score: score}});
@@ -69,17 +72,25 @@ function Question() {
   }
 
   const onAnimationIteration = () => {
-    setCounter(counter - 1);
+    setStartGameCounter(startGameCounter - 1);
+  };
+
+  const onTimerAnimationIteration = () => {
+    setTimer(timer - 1);
+    if (timer === 0) {
+      nextQuestion({text: "", correct: false});
+    }
   };
 
   return (
     <div className="game">
       {(() => {
-        if (counter === 0) {
+        if (startGameCounter === 0) {
           return (
             <div className="question">
-              <p>Good luck, {location.state.name}</p>
               <p>Score: {score}</p>
+              <p>Good luck, {location.state.name}</p>
+              <p onAnimationIteration={onTimerAnimationIteration} className="seconds">{timer}</p>
               <h1>
                 Question {questionIndex + 1}/{questionsAmount}
               </h1>
@@ -101,7 +112,7 @@ function Question() {
           )
         } else {
           return (
-            <p onAnimationIteration={onAnimationIteration} className="growing">{counter}</p>
+            <p onAnimationIteration={onAnimationIteration} className="growing">{startGameCounter}</p>
           )
         }
       })()}
