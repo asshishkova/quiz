@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
 import { FaUndo } from "react-icons/fa";
+import { useKeyPressHandler } from './keypress'
 import "./Question.css";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import _ from "underscore";
@@ -213,22 +214,6 @@ function Question() {
     }
   };
 
-  const useEventListener = (eventName, handler, element = window) => {
-    const savedHandler = useRef();
-
-    useEffect(() => {
-      savedHandler.current = handler;
-    }, [handler]);
-
-    useEffect(() => {
-      const eventListener = (event) => savedHandler.current(event);
-      element.addEventListener(eventName, eventListener);
-      return () => {
-        element.removeEventListener(eventName, eventListener);
-      };
-    }, [eventName, element]);
-  };
-
   const handler = ({ key }) => {
     if (!disabledButton) {
       const parsedKey = parseInt(key) - 1;
@@ -239,7 +224,7 @@ function Question() {
     }
   };
 
-  useEventListener("keydown", handler);
+  useKeyPressHandler(handler);
 
   return (
     <div className="game">
@@ -267,7 +252,7 @@ function Question() {
                     <p className="blinking" >Time's up</p>
                   }
                   {answers.length > 2 && !disabledButton && !hintUsed && timer <= secondsForAnswer / 2 && timer > 0 &&
-                    <p className="blinking hint" onClick={() => hint5050()}>50/50 hint</p>
+                    <p className="blinking hint" onClick={() => hint5050()}>50:50 hint</p>
                   }
                 </div>
               </div>

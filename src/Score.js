@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Score.css"
 import ReactCanvasConfetti from "react-canvas-confetti";
+import { useKeyPressHandler } from './keypress'
+
 
 function randomInRange(min, max) {
   return Math.random() * (max - min) + min;
@@ -67,18 +69,20 @@ function Score() {
     navigate("/", location);
   }, [intervalId, location, navigate]);
 
-  const handleKeypress = e => {
-    if (e.key === "Enter") {
-      startOver()();
+  const handler = ({ key }) => {
+    if (key === "Enter") {
+      startOver();
     }
   };
+
+  useKeyPressHandler(handler);
 
   return (
     <div className="game">
       <div>
         <h1>Congratulations, {location.state.playerName}</h1>
         <h1>Your score is {location.state.score}</h1>
-        <button onKeyPress={handleKeypress} className="orange-again-btn" onClick={() => startOver()}>Again?</button>
+        <button className="orange-again-btn" onClick={() => startOver()}>Again?</button>
       </div>
       <ReactCanvasConfetti refConfetti={getInstance} style={canvasStyles} />
     </div>

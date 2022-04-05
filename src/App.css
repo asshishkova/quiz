@@ -101,3 +101,41 @@ body {
       background-position: 0% 50%;
   }
 }
+
+.rules-div {
+  position: relative;
+}
+#rules[type="checkbox"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+#rules[type="checkbox"]:checked ~ h2 label::before {
+  border-left: 8px solid transparent;
+  border-top: 8px solid black;
+  border-right: 8px solid transparent;
+  margin-left: -4px;
+  margin-top: -4px;
+}
+
+.rules {
+  max-height: 0;
+  text-align: start;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+#rules[type="checkbox"]:checked ~ h2 ~ p {
+  max-height: 80px;
+}
+
+.show-rules {
+  cursor: pointer !important;
+}
+
+.show-rules:hover {
+  color: #f66a3f;
+}
