@@ -19,6 +19,17 @@
 .incorrect-card {
   background: linear-gradient(-45deg, #fa0303, #f75a5a);
 }
+.disabled-card {
+  background: linear-gradient(-45deg, #23a6d5, #23d5ab);
+}
+/* .disabled-card:hover {
+  box-shadow: none !important;
+} */
+
+.card-btn:disabled {
+  cursor: default;
+  box-shadow: none !important;
+}
 
 .small-numbers {
   font-size: 20px;
@@ -27,8 +38,8 @@
 
 .card-btn:hover {
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 1);
-  background-size: 100% 100%;
 }
+
 
 .card-btn:active {
   box-shadow: none;
@@ -122,6 +133,10 @@ ol {
 
 .right-info {
   text-align: end;
+}
+
+.hint {
+  cursor: pointer;
 }
 
 .start-over {

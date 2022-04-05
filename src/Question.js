@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
-import { FaUndo } from 'react-icons/fa';
+import { FaUndo } from "react-icons/fa";
 import "./Question.css";
 import ReactCanvasConfetti from "react-canvas-confetti";
+import _ from "underscore";
 
 const difficulties = {"easy": 1, "medium": 2, "hard": 3};
-const secondsForAnswer = 30;
+const secondsForAnswer = 20;
 const defaultTimerClassName = "blinking" ;
 const defaultAnswerClassName = "card-btn regular-card";
-const defaultDisabledButton = false;
 
 const canvasStyles = {
   position: "fixed",
@@ -24,7 +24,8 @@ function buildAnswers(currentQuestion) {
   const correctAnswer = {
     text: currentQuestion.correct_answer,
     correct: true,
-    class: defaultAnswerClassName
+    class: defaultAnswerClassName,
+    disabled: false
   };
   const answers = [];
   currentQuestion.incorrect_answers.forEach(incorrectAnswer => {
@@ -34,9 +35,16 @@ function buildAnswers(currentQuestion) {
       class: defaultAnswerClassName
     });
   });
-  const randomIndex = Math.floor(Math.random() * answers.length)
-  // console.log(randomIndex + 1);
-  answers.splice(randomIndex, 0, correctAnswer);
+  if (currentQuestion.type === "boolean") {
+    if (correctAnswer.text === "True"){
+      answers.splice(0, 0, correctAnswer);
+    } else {
+      answers.splice(1, 0, correctAnswer);
+    }
+  } else  {
+    const randomIndex = Math.floor(Math.random() * answers.length)
+    answers.splice(randomIndex, 0, correctAnswer);
+  }
   answers.forEach((answer, i) => {
     answer.index = i;
   });
@@ -96,7 +104,8 @@ function Question() {
   const [startGameCounter, setStartGameCounter] = useState(3);
   const [timer, setTimer] = useState(secondsForAnswer);
   const [timerClassName, setTimerClassName] = useState(defaultTimerClassName);
-  const [disabledButton, setDisabledButton] = useState(defaultDisabledButton);
+  const [disabledButton, setDisabledButton] = useState(false);
+  const [hintUsed, setHintUsed] = useState(false);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -146,6 +155,7 @@ function Question() {
 
   const nextQuestion = () => {
     setDisabledButton(false);
+    setHintUsed(false);
     setTimer(secondsForAnswer);
     setTimerClassName(defaultTimerClassName);
     const nextQuestionIndex = questionIndex + 1;
@@ -162,6 +172,28 @@ function Question() {
 
   const startOver = () => {
     navigate("/", location)
+  }
+
+  const hint5050 = () => {
+    setHintUsed(true);
+    let updatedAnswers = answers.slice();
+    const indexes = [...Array(answers.length).keys()];
+    const halfIndexes = _.sample(indexes, answers.length  / 2);
+    const restIndexes = indexes.filter(i => !halfIndexes.includes(i));
+    if (updatedAnswers[halfIndexes[0]].correct || updatedAnswers[halfIndexes[1]].correct) {
+      updatedAnswers = disableAnswers(updatedAnswers, restIndexes);
+    } else {
+      updatedAnswers = disableAnswers(updatedAnswers, halfIndexes);
+    }
+    setAnswers(updatedAnswers);
+  }
+
+  const disableAnswers = (answers, indexes) => {
+    indexes.forEach(index => {
+      answers[index].disabled = true;
+      answers[index].class = "card-btn disabled-card";
+    });
+    return answers;
   }
 
   const onAnimationIteration = () => {
@@ -230,13 +262,16 @@ function Question() {
                   {timer === 0 &&
                     <p className="blinking" >Time's up</p>
                   }
+                  {answers.length > 2 && !disabledButton && !hintUsed && timer <= secondsForAnswer / 2 && timer > 0 &&
+                    <p className="blinking hint" onClick={() => hint5050()}>50/50 hint</p>
+                  }
                 </div>
               </div>
               <h1>{ReactHtmlParser(currentQuestion.question)}</h1>
               <ol>
                 {answers.map((answer, i) => (
                   <li key={i}>
-                    <button disabled={disabledButton}
+                    <button disabled={disabledButton || answer.disabled}
                       className={answer.class} onClick={() => answerClicked(answer)}>
                         <span className="small-numbers">{ i + 1 }.</span> {ReactHtmlParser(answer.text)}
                     </button>
