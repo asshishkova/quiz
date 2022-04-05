@@ -180,7 +180,11 @@ function Question() {
     const indexes = [...Array(answers.length).keys()];
     const halfIndexes = _.sample(indexes, answers.length  / 2);
     const restIndexes = indexes.filter(i => !halfIndexes.includes(i));
-    if (updatedAnswers[halfIndexes[0]].correct || updatedAnswers[halfIndexes[1]].correct) {
+    let isCorrectHalfIndexes = []
+    halfIndexes.forEach(index => {
+      isCorrectHalfIndexes.push(updatedAnswers[index]);
+    });
+    if (isCorrectHalfIndexes.includes(true)) {
       updatedAnswers = disableAnswers(updatedAnswers, restIndexes);
     } else {
       updatedAnswers = disableAnswers(updatedAnswers, halfIndexes);
