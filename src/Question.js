@@ -183,7 +183,7 @@ function Question() {
     const restIndexes = indexes.filter(i => !halfIndexes.includes(i));
     let isCorrectHalfIndexes = []
     halfIndexes.forEach(index => {
-      isCorrectHalfIndexes.push(updatedAnswers[index]);
+      isCorrectHalfIndexes.push(updatedAnswers[index].correct);
     });
     if (isCorrectHalfIndexes.includes(true)) {
       updatedAnswers = disableAnswers(updatedAnswers, restIndexes);
@@ -218,7 +218,7 @@ function Question() {
     if (!disabledButton) {
       const parsedKey = parseInt(key) - 1;
       const keys = [...Array(answers.length).keys()];
-      if (keys.includes(parsedKey)) {
+      if (keys.includes(parsedKey) && !answers[parsedKey].disabled) {
         answerClicked(answers[parsedKey]);
       }
     }
