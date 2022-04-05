@@ -1,13 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Score.css"
 import ReactCanvasConfetti from "react-canvas-confetti";
 import { useKeyPressHandler } from './keypress'
-
-
-function randomInRange(min, max) {
-  return Math.random() * (max - min) + min;
-}
+import { StartAnimation } from './animation'
 
 const canvasStyles = {
   position: "fixed",
@@ -18,56 +14,42 @@ const canvasStyles = {
   left: 0
 };
 
-function getAnimationSettings(originXA, originXB) {
-  return {
-    startVelocity: 30,
-    spread: 360,
-    ticks: 60,
-    zIndex: 0,
-    particleCount: 150,
-    origin: {
-      x: randomInRange(originXA, originXB),
-      y: Math.random() - 0.2
-    }
-  };
-}
-
 function Score() {
   const navigate = useNavigate();
   const location = useLocation();
+  let animation;
+  const difficulties = {"easy": 1, "medium": 2, "hard": 3};
 
-  const refAnimationInstance = useRef(null);
-  const [intervalId, setIntervalId] = useState();
+  const maximumPoints = location.state.amount
+                        * location.state.secondsForAnswer
+                        * difficulties[location.state.difficulty];
 
-  const getInstance = useCallback((instance) => {
-    refAnimationInstance.current = instance;
-  }, []);
+  const goodFrom = maximumPoints / 3;
+  const excellentFrom = maximumPoints - goodFrom;
 
-  const nextTickAnimation = useCallback(() => {
-    if (refAnimationInstance.current) {
-      refAnimationInstance.current(getAnimationSettings(0.1, 0.3));
-      refAnimationInstance.current(getAnimationSettings(0.7, 0.9));
+  let congratulations = "";
+  if (location.state.score >= excellentFrom) {
+    animation = StartAnimation()
+    congratulations = "WOW! You are on top!";
+    if (location.state.difficulty === "easy" || location.state.difficulty === "medium") {
+      congratulations += " Try a harder level! ;)";
     }
-  }, []);
-
-  useCallback(() => {
-    if (!intervalId) {
-      setIntervalId(setInterval(nextTickAnimation, 400));
+  } else if (location.state.score >= goodFrom) {
+    animation = StartAnimation()
+    congratulations = "It's a good result, well done!";
+  } else {
+    congratulations = "It's not a lot, but don't worry!";
+    if (location.state.difficulty === "hard" || location.state.difficulty === "medium") {
+      congratulations += " Try an easier level!";
     }
-  }, [intervalId, nextTickAnimation])();
-
-  useEffect(() => {
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [intervalId]);
+  }
 
   const startOver = useCallback(() => {
-    clearInterval(intervalId);
-    setIntervalId(null);
-    refAnimationInstance.current && refAnimationInstance.current.reset();
+    if (animation) {
+      animation.stopAnimation()
+    }
     navigate("/", location);
-  }, [intervalId, location, navigate]);
+  }, [animation, navigate, location]);
 
   const handler = ({ key }) => {
     if (key === "Enter") {
@@ -80,11 +62,14 @@ function Score() {
   return (
     <div className="game">
       <div>
-        <h1>Congratulations, {location.state.playerName}</h1>
+        <h2>Hey {location.state.playerName}</h2>
         <h1>Your score is {location.state.score}</h1>
-        <button className="orange-again-btn" onClick={() => startOver()}>Again?</button>
+        <p>{congratulations}</p>
+        <button className="orange-again-btn" onClick={() => startOver()}>Play again</button>
       </div>
-      <ReactCanvasConfetti refConfetti={getInstance} style={canvasStyles} />
+      {animation &&
+      <ReactCanvasConfetti refConfetti={animation.getInstance} style={canvasStyles} />
+      }
     </div>
   );
 }

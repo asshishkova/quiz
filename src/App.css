@@ -1,6 +1,6 @@
 .game {
   text-align: center;
-  margin-top: 100px;
+  margin-top: 50px;
   color: #313133;
   font-family: 'Saira', sans-serif;
   display: flex;
@@ -8,16 +8,22 @@
 }
 
 h1 {
+  /* margin: 0px; */
   margin-bottom: 30px;
-  /* text-shadow: 0px 5px 15px white; */
 }
 
 p {
+  margin: 0px;
   margin: 20px;
   font-size: 25px;
 }
 
-input {
+.welcome {
+  /* margin: 0px !important; */
+  max-width: 600px;
+}
+
+input, .levels {
   font-size: 25px;
   text-align: center;
   font-family: 'Saira', sans-serif;
@@ -102,10 +108,11 @@ body {
   }
 }
 
-.rules-div {
+div.rules {
   position: relative;
+  text-align: left;
 }
-#rules[type="checkbox"] {
+div.rules input[type="checkbox"] {
   position: absolute;
   top: 0;
   left: 0;
@@ -113,8 +120,38 @@ body {
   height: 100%;
   opacity: 0;
 }
+div.rules h2 {
+  font-size: 25px;
+  text-decoration: underline;
+  margin: none;
+  font-weight: lighter;
+}
 
-#rules[type="checkbox"]:checked ~ h2 label::before {
+div.rules h2:hover, label:hover {
+  color: #f49755;
+}
+
+div.rules label {
+  cursor: pointer;
+}
+div.rules label {
+  position: relative;
+  display: block;
+  padding-left: 30px;
+}
+div.rules label::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 50%;
+  left: 10px;
+  border-left: 8px solid black;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  margin-top: -8px;
+}
+div.rules input[type="checkbox"]:checked ~ h2 label::before {
   border-left: 8px solid transparent;
   border-top: 8px solid black;
   border-right: 8px solid transparent;
@@ -122,20 +159,13 @@ body {
   margin-top: -4px;
 }
 
-.rules {
+div.rules ul {
   max-height: 0;
-  text-align: start;
   overflow: hidden;
+  padding-left: 30px;
   transition: max-height 0.4s ease;
+  font-size: 20px;
 }
-#rules[type="checkbox"]:checked ~ h2 ~ p {
-  max-height: 80px;
-}
-
-.show-rules {
-  cursor: pointer !important;
-}
-
-.show-rules:hover {
-  color: #f66a3f;
+div.rules input[type="checkbox"]:checked ~ h2 ~ ul {
+  max-height: 800px;
 }

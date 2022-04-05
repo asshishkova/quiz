@@ -3,8 +3,15 @@
 
 import axios from "axios"
 export async function handler(event, context) {
+  const amount = event.queryStringParameters.amount;
+  const difficulty = event.queryStringParameters.difficulty;
   try {
-    const response = await axios.get("https://opentdb.com/api.php?amount=10", { headers: { Accept: "application/json" } })
+    const response = await axios.get(
+      "https://opentdb.com/api.php?"
+      + "amount=" + amount
+      + "&difficulty=" + difficulty,
+      { headers: { Accept: "application/json" } }
+    )
     const data = response.data
     return {
       statusCode: 200,

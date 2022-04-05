@@ -22,9 +22,6 @@
 .disabled-card {
   background: linear-gradient(-45deg, #23a6d5, #23d5ab);
 }
-/* .disabled-card:hover {
-  box-shadow: none !important;
-} */
 
 .card-btn:disabled {
   cursor: default;
@@ -46,7 +43,7 @@
   background-size: 100% 100%;
 }
 
-li{
+.cards{
   display: inline;
 }
 

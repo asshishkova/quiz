@@ -8,7 +8,6 @@ import ReactCanvasConfetti from "react-canvas-confetti";
 import _ from "underscore";
 
 const difficulties = {"easy": 1, "medium": 2, "hard": 3};
-const secondsForAnswer = 20;
 const defaultTimerClassName = "blinking" ;
 const defaultAnswerClassName = "card-btn regular-card";
 
@@ -43,8 +42,9 @@ function buildAnswers(currentQuestion) {
       answers.splice(1, 0, correctAnswer);
     }
   } else  {
-    const randomIndex = Math.floor(Math.random() * answers.length)
-    answers.splice(randomIndex, 0, correctAnswer);
+    const correctAnswerIndex = Math.floor(Math.random() * answers.length)
+    // console.log(correctAnswerIndex + 1);
+    answers.splice(correctAnswerIndex, 0, correctAnswer);
   }
   answers.forEach((answer, i) => {
     answer.index = i;
@@ -97,6 +97,8 @@ function Question() {
     });
   }, [makeShot]);
 
+  const secondsForAnswer = 30;
+
   // process.env.REACT_APP_UNSPLASH_API_KEY
   const [questions, setQuestions] = useState({results: []});
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -109,11 +111,21 @@ function Question() {
   const [hintUsed, setHintUsed] = useState(false);
   const [score, setScore] = useState(0);
 
+  const amount = 10;
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
-    fetch("/.netlify/functions/async-getquestions")
+    fetch("/.netlify/functions/async-getquestions?"
+          + "amount=" + amount
+          + "&difficulty=" + location.state.difficulty)
     .then(response => response.json())
     .then(response => {
       const questions = response.results;
+      if (questions.length === 0) {
+        navigate("/", location);
+        return;
+      }
       const questionIndex = 0;
       const currentQuestion = questions[questionIndex];
       const answers = buildAnswers(currentQuestion);
@@ -121,11 +133,9 @@ function Question() {
       setAnswers(answers);
       setQuestions(questions);
     })
-  }, []);
+  }, [location, navigate]);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const questionsAmount = questions.length;
+  // const amount = questions.length;
   let playerName = "Guest";
   const stateName = location.state.name.trim();
   if (stateName.length > 0) {
@@ -136,9 +146,15 @@ function Question() {
     setDisabledButton(true);
     let updatedAnswers = answers.slice();
     setTimerClassName("");
+    let newScore = score;
     if (answer.correct) {
       fire()
-      setScore(score + timer * difficulties[currentQuestion.difficulty]);
+      let addPoints = timer * difficulties[currentQuestion.difficulty];
+      if (hintUsed) {
+        addPoints = Math.ceil(addPoints / 2);
+      }
+      newScore = newScore + addPoints;
+      setScore(newScore);
       updatedAnswers[answer.index].class = "card-btn correct-card";
     } else if (answer.index >= 0) {
       updatedAnswers[answer.index].class = "card-btn incorrect-card";
@@ -149,19 +165,26 @@ function Question() {
         if (answer.correct) {
           refAnimationInstance.current.reset();
         }
-        nextQuestion();
+        nextQuestion(newScore);
       }
     }, 2000);
   }
 
-  const nextQuestion = () => {
+  const nextQuestion = (score) => {
     setDisabledButton(false);
     setHintUsed(false);
     setTimer(secondsForAnswer);
     setTimerClassName(defaultTimerClassName);
     const nextQuestionIndex = questionIndex + 1;
-    if (nextQuestionIndex === questionsAmount) {
-      navigate("/score", {state: {score: score, playerName: playerName, name: location.state.name}});
+    if (nextQuestionIndex === amount) {
+      navigate("/score",
+      {state: {
+        ...location.state,
+        score: score,
+        playerName: playerName,
+        amount: amount,
+        secondsForAnswer: secondsForAnswer
+      }});
     } else {
       const currentQuestion = questions[nextQuestionIndex];
       const answers = buildAnswers(currentQuestion);
@@ -169,10 +192,6 @@ function Question() {
       setAnswers(answers);
       setQuestionIndex(nextQuestionIndex);
     }
-  }
-
-  const startOver = () => {
-    navigate("/", location)
   }
 
   const hint5050 = () => {
@@ -229,14 +248,14 @@ function Question() {
   return (
     <div className="game">
       {(() => {
-        if (startGameCounter > 0) {
+        if (startGameCounter === 0) {
           return (
             <div className="question">
               <div className="game-info">
                 <div className="left-info">
                   <p>Player: {playerName}</p>
                   <p>
-                    Question {questionIndex + 1}/{questionsAmount}
+                    Question {questionIndex + 1}/{amount}
                   </p>
                 </div>
                 <div className="center-info">
@@ -246,7 +265,7 @@ function Question() {
                 </div>
                 <div className="right-info">
                   <p>
-                    <FaUndo className="start-over" title="Start over" onClick={() => startOver()}/>
+                    <FaUndo className="start-over" title="Start over" onClick={() => navigate("/", location)}/>
                   </p>
                   {timer === 0 &&
                     <p className="blinking" >Time's up</p>
@@ -259,7 +278,7 @@ function Question() {
               <h1>{ReactHtmlParser(currentQuestion.question)}</h1>
               <ol>
                 {answers.map((answer, i) => (
-                  <li key={i}>
+                  <li key={i} className="cards">
                     <button disabled={disabledButton || answer.disabled}
                       className={answer.class} onClick={() => answerClicked(answer)}>
                         <span className="small-numbers">{ i + 1 }.</span> {ReactHtmlParser(answer.text)}
