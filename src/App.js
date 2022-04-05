@@ -16,9 +16,18 @@ function Game() {
     navigate("/question", {state: {name: name}});
   }
 
+  const handleKeypress = e => {
+    if (e.key === "Enter") {
+      startGame();
+    }
+  };
+
   return (
     <div>
-      <input value={name} onChange={e => setName(e.target.value)}/>
+      <input autoFocus value={name}
+        onChange={e => setName(e.target.value)}
+        onKeyPress={handleKeypress}
+      />
       <p><button className="orange-start-btn" onClick={() => startGame()}>START</button></p>
     </div>
   );

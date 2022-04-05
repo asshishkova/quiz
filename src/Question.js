@@ -6,7 +6,7 @@ import "./Question.css";
 import ReactCanvasConfetti from "react-canvas-confetti";
 
 const difficulties = {"easy": 1, "medium": 2, "hard": 3};
-const secondsForAnswer = 3;
+const secondsForAnswer = 30;
 const defaultTimerClassName = "blinking" ;
 const defaultAnswerClassName = "card-btn regular-card";
 const defaultDisabledButton = false;
@@ -124,7 +124,7 @@ function Question() {
 
   const answerClicked = (answer) => {
     setDisabledButton(true);
-    let updatedAnswers = answers;
+    let updatedAnswers = answers.slice();
     setTimerClassName("");
     if (answer.correct) {
       fire()
@@ -177,10 +177,38 @@ function Question() {
     }
   };
 
+  const useEventListener = (eventName, handler, element = window) => {
+    const savedHandler = useRef();
+
+    useEffect(() => {
+      savedHandler.current = handler;
+    }, [handler]);
+
+    useEffect(() => {
+      const eventListener = (event) => savedHandler.current(event);
+      element.addEventListener(eventName, eventListener);
+      return () => {
+        element.removeEventListener(eventName, eventListener);
+      };
+    }, [eventName, element]);
+  };
+
+  const handler = ({ key }) => {
+    if (!disabledButton) {
+      const parsedKey = parseInt(key) - 1;
+      const keys = [...Array(answers.length).keys()];
+      if (keys.includes(parsedKey)) {
+        answerClicked(answers[parsedKey]);
+      }
+    }
+  };
+
+  useEventListener("keydown", handler);
+
   return (
     <div className="game">
       {(() => {
-        if (startGameCounter === 0) {
+        if (startGameCounter > 0) {
           return (
             <div className="question">
               <div className="game-info">
