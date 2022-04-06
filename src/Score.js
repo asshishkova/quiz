@@ -40,7 +40,7 @@ function Score() {
   } else {
     congratulations = "It's not a lot, but don't worry!";
     if (location.state.difficulty === "hard" || location.state.difficulty === "medium") {
-      congratulations += " Try an easier level!";
+      congratulations += " Maybe you want to try an easier level?";
     }
   }
 
@@ -62,7 +62,7 @@ function Score() {
   return (
     <div className="game">
       <div>
-        <h2>Hey {location.state.playerName}</h2>
+        <p>Hey {location.state.playerName}</p>
         <h1>Your score is {location.state.score}</h1>
         <p>{congratulations}</p>
         <button className="orange-again-btn" onClick={() => startOver()}>Play again</button>

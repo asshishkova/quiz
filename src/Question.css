@@ -2,7 +2,9 @@
   font-size: 25px;
   margin: 10px;
   padding: 20px;
-  min-width: 200px;
+  /* min-width: 200px;
+  max-width: 400px; */
+  width: 350px;
   min-height: 100px;
   background-size: 400% 400%;
   border: none;
@@ -34,7 +36,7 @@
 }
 
 .card-btn:hover {
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 1);
+  box-shadow: 0px 8px 15px #313133;
 }
 
 
@@ -90,26 +92,35 @@ ol {
 }
 
 .question {
-  position: relative;
-  padding: 20px;
-  /* min-width: 200px; */
-  /* max-width: 1000px; */
+  /* position: relative; */
+  padding: 0px;
   width: 1000px;
-  height: 600px;
-  border-radius: 12px;
-  /* text-shadow: 0px 5px 15px white; */
+  /* border-radius: 12px; */
 }
 
-.question:after {
+.answers {
+  /* position: relative; */
+  /* margin-left: 30px; */
+  padding: 0px;
+}
+
+/* .question:after {
   content: "";
-  /* background: url('https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?ixid=MnwzMTU4Njl8MHwxfHNlYXJjaHwxfHxFbnRlcnRhaW5tZW50JTNBJTIwVmlkZW8lMjBHYW1lc3xlbnwwfDB8fHwxNjQ5MDI0OTM1&ixlib=rb-1.2.1') no-repeat center center; */
+  background: url('https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?ixid=MnwzMTU4Njl8MHwxfHNlYXJjaHwxfHxFbnRlcnRhaW5tZW50JTNBJTIwVmlkZW8lMjBHYW1lc3xlbnwwfDB8fHwxNjQ5MDI0OTM1&ixlib=rb-1.2.1') no-repeat center center;
   position: absolute;
   top:0px;
   left: 0px;
   width: 100%;
   height: 100%;
   z-index: -1;
-  opacity: 0.3; /* Here is your opacity */
+  opacity: 0.3;
+  border-radius: 12px;
+  background-size: cover;
+} */
+
+img {
+  margin-top: 30px;
+  height: 300px;
   border-radius: 12px;
   background-size: cover;
 }

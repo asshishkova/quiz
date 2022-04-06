@@ -3,11 +3,6 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useKeyPressHandler } from './keypress'
 import "./App.css"
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import { GiFire } from 'react-icons/gi';
 
 function Game() {
@@ -40,14 +35,17 @@ function Game() {
         onChange={e => setName(e.target.value)}
       />
       <p>Choose the level:</p>
-      <FormControl>
-        <FormLabel className="levels"></FormLabel>
-        <RadioGroup key={difficulty} row defaultValue={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-          <FormControlLabel value="easy" control={<Radio />} label={<span><GiFire /></span>} />
-          <FormControlLabel value="medium" control={<Radio />} label={<span><GiFire /><GiFire /></span>} />
-          <FormControlLabel value="hard" control={<Radio />} label={<span><GiFire /><GiFire /><GiFire /></span>} />
-        </RadioGroup>
-      </FormControl>
+      <div className="radio-button">
+        <input type="radio" id="radio1" name="radios" value="easy"
+          onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "easy"}/>
+        <label htmlFor="radio1"><span className="fire"><GiFire/></span></label>
+        <input type="radio" id="radio2" name="radios" value="medium"
+          onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "medium"}/>
+        <label htmlFor="radio2"><span className="fire"><GiFire /><GiFire /></span></label>
+        <input type="radio" id="radio3" name="radios" value="hard"
+          onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "hard"}/>
+        <label htmlFor="radio3"><span className="fire"><GiFire /><GiFire /><GiFire /></span></label>
+      </div>
       <p><button className="orange-start-btn" onClick={() => startGame()}>START</button></p>
       <div className="rules">
           <input type="checkbox" id="rules" />

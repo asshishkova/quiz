@@ -27,25 +27,23 @@ function buildAnswers(currentQuestion) {
     class: defaultAnswerClassName,
     disabled: false
   };
-  const answers = [];
-  currentQuestion.incorrect_answers.forEach(incorrectAnswer => {
-    answers.push({
-      text: incorrectAnswer,
-      correct: false,
-      class: defaultAnswerClassName
-    });
-  });
+  // console.log(correctAnswer.text);
+  let answers = [];
   if (currentQuestion.type === "boolean") {
-    if (correctAnswer.text === "True"){
-      answers.splice(0, 0, correctAnswer);
+    answers = [{text: "Yes", correct: correctAnswer.text === "True", class: defaultAnswerClassName},
+               {text: "No", correct: correctAnswer.text === "False", class: defaultAnswerClassName}];
     } else {
-      answers.splice(1, 0, correctAnswer);
+      currentQuestion.incorrect_answers.forEach(incorrectAnswer => {
+        answers.push({
+          text: incorrectAnswer,
+          correct: false,
+          class: defaultAnswerClassName
+        });
+      });
+      const correctAnswerIndex = Math.floor(Math.random() * answers.length)
+      answers.splice(correctAnswerIndex, 0, correctAnswer);
     }
-  } else  {
-    const correctAnswerIndex = Math.floor(Math.random() * answers.length)
-    // console.log(correctAnswerIndex + 1);
-    answers.splice(correctAnswerIndex, 0, correctAnswer);
-  }
+
   answers.forEach((answer, i) => {
     answer.index = i;
   });
@@ -286,6 +284,7 @@ function Question() {
                   </li>
                 ))}
               </ol>
+              <img src="https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?ixid=MnwzMTU4Njl8MHwxfHNlYXJjaHwxfHxFbnRlcnRhaW5tZW50JTNBJTIwVmlkZW8lMjBHYW1lc3xlbnwwfDB8fHwxNjQ5MDI0OTM1&ixlib=rb-1.2.1" alt=""/>
             </div>
           )
         } else {
