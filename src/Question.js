@@ -110,6 +110,7 @@ function Question() {
   const [hintUsed, setHintUsed] = useState(false);
   const [score, setScore] = useState(0);
   const [imageSource, setImageSource] = useState("");
+  const [timeUnfocused, setTimeUnfocused] = useState(null);
 
   const amount = 10;
   const navigate = useNavigate();
@@ -199,8 +200,9 @@ function Question() {
           return_changed_case: true,
           remove_duplicates: true
       });
+      const startKeyword = Math.ceil(keywords.length / 2);
       const unsplashUrl = "https://api.unsplash.com/search/photos?query="
-                      + encodeURI(keywords.slice(0, 3).join(" "))
+                      + encodeURI(keywords.slice(startKeyword - 1, startKeyword + 2).join(" "))
                       + "&client_id=" + process.env.REACT_APP_UNSPLASH_API_KEY
                       + "&per_page=1&orientation=landscape";
 
@@ -286,10 +288,25 @@ function Question() {
     if (timer > 0) {
       setTimer(timer - 1);
     }
-    if (timer === 1) {
+    if (timer <= 1) {
       answerClicked({text: "", correct: false, index: -1});
     }
   };
+
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === "hidden") {
+      setTimeUnfocused(new Date())
+    } else if (timeUnfocused) {
+      let newTimerValue = Math.max (
+        timer - Math.round(((new Date()).getTime() - timeUnfocused.getTime()) / 1000)
+        , 0)
+      setTimer(newTimerValue);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", handleVisibilityChange, false);
+  });
 
   const handler = ({ key }) => {
     if (!disabledButton) {

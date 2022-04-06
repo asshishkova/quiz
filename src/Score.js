@@ -62,9 +62,8 @@ function Score() {
 
   return (
     <div className="game">
-      <div>
-
-        <p>Hey, {location.state.playerName}</p>
+      <div className="congratulations">
+        <p>Hey, {location.state.playerName}!</p>
         <h1><GiFire />Your score is {location.state.score}<GiFire /></h1>
         <p>{congratulations}</p>
         <button className="orange-again-btn" onClick={() => startOver()}>Play again</button>
