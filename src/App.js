@@ -52,16 +52,17 @@ function Game() {
           <h2><label htmlFor="rules">Rules</label></h2>
           <ul>
             <li>Every time there are 10 different questions,
-                for each question there is only one correct answer.</li>
-            <li>You can either click on the answer
-                or press its number on the keyboard.</li>
+                for<span>&nbsp;</span>each question
+                there is<span>&nbsp;</span>only one correct answer.</li>
+            <li>You can either click on<span>&nbsp;</span>the<span>&nbsp;</span>answer
+                or press its number on<span>&nbsp;</span>the<span>&nbsp;</span>keyboard.</li>
             <li>For each question you have 30 seconds.</li>
             <li>Every right answer increases your score
-                by the amount of seconds left
-                multiplied by difficulty factor.</li>
-            <li>If the half of the time is already passed
-                you can get a 50:50 hint, but then you receive
-                only half of the poins for this answer.</li>
+                by<span>&nbsp;</span>the<span>&nbsp;</span>amount of<span>&nbsp;</span>seconds left
+                multiplied by<span>&nbsp;</span>a<span>&nbsp;</span>difficulty factor.</li>
+            <li>If the half of<span>&nbsp;</span>the<span>&nbsp;</span>time is already passed
+                you can get a<span>&nbsp;</span>50:50<span>&nbsp;</span>hint, but then you receive
+                only half of<span>&nbsp;</span>the<span>&nbsp;</span>poins for<span>&nbsp;</span>this answer.</li>
           </ul>
         </div>
     </div>

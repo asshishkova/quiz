@@ -4,6 +4,7 @@ import "./Score.css"
 import ReactCanvasConfetti from "react-canvas-confetti";
 import { useKeyPressHandler } from './keypress'
 import { StartAnimation } from './animation'
+import { GiFire } from 'react-icons/gi';
 
 const canvasStyles = {
   position: "fixed",
@@ -62,8 +63,9 @@ function Score() {
   return (
     <div className="game">
       <div>
-        <p>Hey {location.state.playerName}</p>
-        <h1>Your score is {location.state.score}</h1>
+
+        <p>Hey, {location.state.playerName}</p>
+        <h1><GiFire />Your score is {location.state.score}<GiFire /></h1>
         <p>{congratulations}</p>
         <button className="orange-again-btn" onClick={() => startOver()}>Play again</button>
       </div>

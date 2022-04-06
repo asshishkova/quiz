@@ -29,7 +29,6 @@ function buildAnswers(currentQuestion) {
     class: defaultAnswerClassName,
     disabled: false
   };
-  // console.log(correctAnswer.text);
   let answers = [];
   if (currentQuestion.type === "boolean") {
     answers = [{text: "Yes", correct: correctAnswer.text === "True", class: defaultAnswerClassName},
@@ -110,7 +109,7 @@ function Question() {
   const [disabledButton, setDisabledButton] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [score, setScore] = useState(0);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageSource, setImageSource] = useState("");
 
   const amount = 10;
   const navigate = useNavigate();
@@ -131,8 +130,11 @@ function Question() {
       const currentQuestion = questions[questionIndex];
       const answers = buildAnswers(currentQuestion);
       setCurrentQuestion(currentQuestion);
-      setAnswers(answers);
-      setQuestions(questions);
+      nextImage(currentQuestion, function (imageData) {
+        setImageSource(imageData);
+        setAnswers(answers);
+        setQuestions(questions);
+      });
     })
   }, [location, navigate]);
 
@@ -161,17 +163,70 @@ function Question() {
       updatedAnswers[answer.index].class = "card-btn incorrect-card";
     }
     setAnswers(updatedAnswers);
-    setTimeout(() => {
-      if (refAnimationInstance.current) {
-        if (answer.correct) {
-          refAnimationInstance.current.reset();
+    const nextQuestionIndex = questionIndex + 1;
+    if (nextQuestionIndex < amount) {
+      const currentQuestion = questions[nextQuestionIndex];
+      nextImage(currentQuestion, function (imageData) {
+        setTimeout(() => {
+          if (refAnimationInstance.current) {
+            if (answer.correct) {
+              refAnimationInstance.current.reset();
+            }
+            nextQuestion(newScore, imageData);
+          }
+        }, 2000);
+      });
+    } else {
+      setTimeout(() => {
+        if (refAnimationInstance.current) {
+          if (answer.correct) {
+            refAnimationInstance.current.reset();
+          }
+          nextQuestion(newScore, null);
         }
-        nextQuestion(newScore);
-      }
-    }, 2000);
+      }, 2000);
+    }
   }
 
-  const nextQuestion = (score) => {
+  const defaultImg = "defaultImg.jpeg";
+
+  const nextImage = (question, callback) => {
+    if (question.question) {
+      const keywords =
+      keyword_extractor.extract(ReactHtmlParser(question.question)[0],{
+          language:"english",
+          remove_digits: true,
+          return_changed_case: true,
+          remove_duplicates: true
+      });
+      const unsplashUrl = "https://api.unsplash.com/search/photos?query="
+                      + encodeURI(keywords.slice(0, 3).join(" "))
+                      + "&client_id=" + process.env.REACT_APP_UNSPLASH_API_KEY
+                      + "&per_page=1&orientation=landscape";
+
+      return axios.get(
+        unsplashUrl,
+        { headers: { Accept: "application/json" } }
+      )
+      .then((response) => {
+        if (response.data.results.length > 0) {
+          axios.get(response.data.results[0].urls.small, {
+            responseType: 'arraybuffer'
+          })
+          .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+          .then(imageData => {
+            callback("data:image/png;base64, " + imageData)
+          })
+        } else {
+          callback(defaultImg);
+        }
+      }).catch((err) => {
+        callback(defaultImg);
+      })
+    }
+  }
+
+  const nextQuestion = (score, imageData) => {
     setDisabledButton(false);
     setHintUsed(false);
     setTimer(secondsForAnswer);
@@ -190,6 +245,7 @@ function Question() {
       const currentQuestion = questions[nextQuestionIndex];
       const answers = buildAnswers(currentQuestion);
       setCurrentQuestion(currentQuestion);
+      setImageSource(imageData);
       setAnswers(answers);
       setQuestionIndex(nextQuestionIndex);
     }
@@ -244,38 +300,6 @@ function Question() {
     }
   };
 
-  useEffect(() => {
-    if (currentQuestion.question) {
-      const keywords =
-      keyword_extractor.extract(ReactHtmlParser(currentQuestion.question)[0],{
-          language:"english",
-          remove_digits: true,
-          return_changed_case: true,
-          remove_duplicates: true
-      });
-      console.log(keywords.join(" "))
-      console.log(keywords.slice(0, 3).join(" "))
-      const unsplashUrl = "https://api.unsplash.com/search/photos?query="
-                      + encodeURI(keywords.slice(0, 3).join(" "))
-                      + "&client_id=" + process.env.REACT_APP_UNSPLASH_API_KEY
-                      + "&per_page=1&orientation=landscape";
-      console.log(currentQuestion.category);
-      console.log(unsplashUrl);
-      axios.get(
-        unsplashUrl,
-        { headers: { Accept: "application/json" } }
-      )
-      .then((response) => {
-        if (response.data.results.length > 0) {
-          setImageUrl(response.data.results[0].urls.small);
-        } else {
-          setImageUrl("");
-        }
-      })
-    }
-  }, [currentQuestion]);
-
-
   useKeyPressHandler(handler);
 
   return (
@@ -309,9 +333,9 @@ function Question() {
                 </div>
               </div>
               <h1>{ReactHtmlParser(currentQuestion.question)}</h1>
-              <ol>
+              <ol className="cards">
                 {answers.map((answer, i) => (
-                  <li key={i} className="cards">
+                  <li key={i} className="card">
                     <button disabled={disabledButton || answer.disabled}
                       className={answer.class} onClick={() => answerClicked(answer)}>
                         <span className="small-numbers">{ i + 1 }.</span> {ReactHtmlParser(answer.text)}
@@ -319,7 +343,7 @@ function Question() {
                   </li>
                 ))}
               </ol>
-              <img src={imageUrl} alt=""/>
+              <img key={questionIndex} src={imageSource} alt=""/>
             </div>
           )
         } else {
