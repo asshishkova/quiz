@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import ReactHtmlParser from 'react-html-parser';
 import "./Score.css"
 import ReactCanvasConfetti from "react-canvas-confetti";
 import { useKeyPressHandler } from './keypress'
@@ -33,7 +34,7 @@ function Score() {
     animation = StartAnimation()
     congratulations = "WOW! You are on top!";
     if (location.state.difficulty === "easy" || location.state.difficulty === "medium") {
-      congratulations += " Try a harder level! ;)";
+      congratulations += "<br/>Try a harder level!";
     }
   } else if (location.state.score >= goodFrom) {
     animation = StartAnimation()
@@ -41,7 +42,7 @@ function Score() {
   } else {
     congratulations = "It's not a lot, but don't worry!";
     if (location.state.difficulty === "hard" || location.state.difficulty === "medium") {
-      congratulations += " Maybe you want to try an easier level?";
+      congratulations += "<br/>Maybe you want to<span>&nbsp;</span>try an<span>&nbsp;</span>easier level?";
     }
   }
 
@@ -65,7 +66,7 @@ function Score() {
       <div className="congratulations">
         <p>Hey, {location.state.playerName}!</p>
         <h1><GiFire />Your score is {location.state.score}<GiFire /></h1>
-        <p>{congratulations}</p>
+        <p>{ReactHtmlParser(congratulations)}</p>
         <button className="orange-again-btn" onClick={() => startOver()}>Play again</button>
       </div>
       {animation &&
