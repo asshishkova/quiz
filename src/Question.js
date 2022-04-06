@@ -221,6 +221,7 @@ function Question() {
           callback(defaultImg);
         }
       }).catch((err) => {
+        console.log("Unsplash API has reached its rate limit. Replacing with the default image.")
         callback(defaultImg);
       })
     }
