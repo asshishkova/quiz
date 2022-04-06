@@ -40,11 +40,10 @@ p {
   width: 80px;
   border-radius: 30px;
   background-color: #d1d1d183;
-  box-shadow: 0px 3px 15px #313133;
 }
 .radio-button input[type="radio"]:checked+label {
-  background-color: #31313383;
-  color: #f49755;
+  color: #f6513f;
+  box-shadow: 0px 3px 15px #313133;
 }
 
 .fire {
@@ -52,7 +51,7 @@ p {
 }
 
 .radio-button label:hover {
-  color: #f49755;
+  box-shadow: 0px 3px 15px #313133;
 }
 
 

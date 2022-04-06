@@ -6,6 +6,8 @@ import { useKeyPressHandler } from './keypress'
 import "./Question.css";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import _ from "underscore";
+import axios from "axios"
+import keyword_extractor from "keyword-extractor";
 
 const difficulties = {"easy": 1, "medium": 2, "hard": 3};
 const defaultTimerClassName = "blinking" ;
@@ -108,6 +110,7 @@ function Question() {
   const [disabledButton, setDisabledButton] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [score, setScore] = useState(0);
+  const [imageUrl, setImageUrl] = useState("");
 
   const amount = 10;
   const navigate = useNavigate();
@@ -241,6 +244,38 @@ function Question() {
     }
   };
 
+  useEffect(() => {
+    if (currentQuestion.question) {
+      const keywords =
+      keyword_extractor.extract(ReactHtmlParser(currentQuestion.question)[0],{
+          language:"english",
+          remove_digits: true,
+          return_changed_case: true,
+          remove_duplicates: true
+      });
+      console.log(keywords.join(" "))
+      console.log(keywords.slice(0, 3).join(" "))
+      const unsplashUrl = "https://api.unsplash.com/search/photos?query="
+                      + encodeURI(keywords.slice(0, 3).join(" "))
+                      + "&client_id=" + process.env.REACT_APP_UNSPLASH_API_KEY
+                      + "&per_page=1&orientation=landscape";
+      console.log(currentQuestion.category);
+      console.log(unsplashUrl);
+      axios.get(
+        unsplashUrl,
+        { headers: { Accept: "application/json" } }
+      )
+      .then((response) => {
+        if (response.data.results.length > 0) {
+          setImageUrl(response.data.results[0].urls.small);
+        } else {
+          setImageUrl("");
+        }
+      })
+    }
+  }, [currentQuestion]);
+
+
   useKeyPressHandler(handler);
 
   return (
@@ -284,7 +319,7 @@ function Question() {
                   </li>
                 ))}
               </ol>
-              <img src="https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?ixid=MnwzMTU4Njl8MHwxfHNlYXJjaHwxfHxFbnRlcnRhaW5tZW50JTNBJTIwVmlkZW8lMjBHYW1lc3xlbnwwfDB8fHwxNjQ5MDI0OTM1&ixlib=rb-1.2.1" alt=""/>
+              <img src={imageUrl} alt=""/>
             </div>
           )
         } else {
