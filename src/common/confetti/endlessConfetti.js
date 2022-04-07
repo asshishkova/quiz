@@ -18,7 +18,7 @@ function getAnimationSettings(originXA, originXB) {
   };
 }
 
-export function StartAnimation() {
+export function StartEndlessConfettiAnimation() {
   const refAnimationInstance = useRef(null);
   const [intervalId, setIntervalId] = useState();
 

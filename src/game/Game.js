@@ -7,13 +7,14 @@ import axios from "axios";
 import _ from "underscore";
 import keyword_extractor from "keyword-extractor";
 import { useKeyPressHandler } from "../common/keypress";
-import { useOneShotConfettiAnimation, canvasStyles } from "../common/confetti"
+import { useOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti"
+import { canvasStyles } from "../common/confetti/canvasStyle";
 import { difficulties } from '../common/common';
 import "./Game.css";
 
 const defaultTimerClassName = "blinking-text-animation" ;
 const defaultAnswerClassName = "answer-card-btn regular-card";
-const amount = 1;
+const amount = 10;
 const secondsForAnswer = 30;
 
 async function getQuestions(amount, difficulty) {
@@ -114,7 +115,7 @@ function Question() {
     setTimerClassName("");
     let newScore = score;
     if (answer.correct) {
-      oneShotConfettiAnimation.StartAnimation();
+      oneShotConfettiAnimation.startAnimation();
       let addPoints = timer * difficulties[currentQuestion.difficulty];
       if (hintUsed) {
         addPoints = Math.ceil(addPoints / 2);

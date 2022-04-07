@@ -2,11 +2,13 @@ import React, { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
 import ReactCanvasConfetti from "react-canvas-confetti";
-import { StartAnimation } from './animation';
 import { GiFire } from 'react-icons/gi';
-import { useOneShotConfettiAnimation, canvasStyles } from "../common/confetti";
 import { useKeyPressHandler } from '../common/keypress';
 import { difficulties } from '../common/common';
+import { useOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti";
+import { StartEndlessConfettiAnimation } from '../common/confetti/endlessConfetti';
+import { canvasStyles } from "../common/confetti/canvasStyle";
+
 import "./Score.css";
 
 
@@ -25,17 +27,17 @@ function Score() {
 
   let congratulations = "";
   if (location.state.score >= excellentFrom) {
-    confettiAnimation = StartAnimation();
+    confettiAnimation = StartEndlessConfettiAnimation();
     congratulations = "WOW! You are on top!";
     if (location.state.difficulty === "easy" || location.state.difficulty === "medium") {
       congratulations += "<br/>Try a harder level!";
     }
   } else if (location.state.score >= goodFrom) {
-    confettiAnimation = StartAnimation();
+    confettiAnimation = StartEndlessConfettiAnimation();
     congratulations = "It's a good result, well done!";
   } else {
     setTimeout(() => {
-      confettiAnimation.StartAnimation();
+      confettiAnimation.startAnimation();
     }, 0);
     congratulations = "It's not a lot, but don't worry!";
     if (location.state.difficulty === "hard" || location.state.difficulty === "medium") {
