@@ -1,11 +1,10 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useKeyPressHandler } from './keypress'
-import "./App.css"
+import { useKeyPressHandler } from '../common/keypress'
 import { GiFire } from 'react-icons/gi';
+import "./Start.css"
 
-function Game() {
+function Start() {
   const navigate = useNavigate();
   const location = useLocation();
   let initialName = "";
@@ -30,24 +29,28 @@ function Game() {
   useKeyPressHandler(handler);
 
   return (
-    <div>
-      <input autoFocus value={name}
-        onChange={e => setName(e.target.value)}
-      />
-      <p>Choose the level:</p>
-      <div className="radio-button">
-        <input type="radio" id="radio1" name="radios" value="easy"
-          onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "easy"}/>
-        <label htmlFor="radio1"><span className="fire"><GiFire/></span></label>
-        <input type="radio" id="radio2" name="radios" value="medium"
-          onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "medium"}/>
-        <label htmlFor="radio2"><span className="fire"><GiFire /><GiFire /></span></label>
-        <input type="radio" id="radio3" name="radios" value="hard"
-          onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "hard"}/>
-        <label htmlFor="radio3"><span className="fire"><GiFire /><GiFire /><GiFire /></span></label>
-      </div>
-      <p><button className="orange-start-btn" onClick={() => startGame()}>START</button></p>
-      <div className="rules">
+    <div className="app">
+      <div className="welcome">
+        <h1>Welcome to the Quiz!</h1>
+
+        <p>Enter your name:</p>
+        <input autoFocus value={name} onChange={e => setName(e.target.value)} />
+
+        <p>Choose the level:</p>
+        <div className="radio-button">
+          <input type="radio" id="easy" name="radios" value="easy"
+            onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "easy"}/>
+          <label htmlFor="easy"><span><GiFire/></span></label>
+          <input type="radio" id="medium" name="radios" value="medium"
+            onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "medium"}/>
+          <label htmlFor="medium"><span><GiFire /><GiFire /></span></label>
+          <input type="radio" id="hard" name="radios" value="hard"
+            onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "hard"}/>
+          <label htmlFor="hard"><span><GiFire /><GiFire /><GiFire /></span></label>
+        </div>
+        <p><button className="orange-start-btn" onClick={() => startGame()}>START</button></p>
+
+        <div className="dropdown-rules">
           <input type="checkbox" id="rules" />
           <h2><label htmlFor="rules">Rules</label></h2>
           <ul>
@@ -65,22 +68,9 @@ function Game() {
                 only half of<span>&nbsp;</span>the<span>&nbsp;</span>poins for<span>&nbsp;</span>this answer.</li>
           </ul>
         </div>
-    </div>
-  );
-}
-
-function App() {
-  return (
-    <div className="game">
-      <div className="welcome">
-        <h1>Welcome to the Quiz!</h1>
-        <p>
-          Enter your name:
-        </p>
-        <Game />
       </div>
     </div>
   );
 }
 
-export default App;
+export default Start;

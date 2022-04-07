@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import Question from './Question';
+import Start from './start/Start.js';
+import Question from './Game';
 import Score from './Score';
 import * as serviceWorker from './serviceWorker';
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -11,7 +10,7 @@ ReactDOM.render(
   <React.StrictMode>
     <MemoryRouter>
       <Routes>
-        <Route exact path="/" element={<App />} />
+        <Route exact path="/" element={<Start />} />
         <Route path="/question" element={<Question />} />
         <Route path="/score" element={<Score />} />
       </Routes>

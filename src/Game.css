@@ -10,7 +10,7 @@
 }
 
 .regular-card {
-  background: linear-gradient(-45deg, #f66a3f, #f4af55);
+  background: linear-gradient(-45deg, var(--dark-orange), var(--main-orange));
 }
 
 .correct-card {
@@ -20,7 +20,7 @@
   background: linear-gradient(-45deg, #fa0303, #f75a5a);
 }
 .disabled-card {
-  background: linear-gradient(-45deg, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, var(--background-blue), var(--background-green));
 }
 
 .card-btn:disabled {
@@ -34,7 +34,7 @@
 }
 
 .card-btn:hover {
-  box-shadow: 0px 8px 15px #313133;
+  box-shadow: 0px 8px 15px var(--main-gray);
 }
 
 
@@ -56,8 +56,8 @@
 .growing {
   animation: growth 1s infinite;
   animation-fill-mode: backwards;
-  color: #f66a3f;
-  text-shadow: 0px 8px 15px #313133;
+  color: var(--dark-orange);
+  text-shadow: 0px 8px 15px var(--main-gray);
   font-size: 400px;
   line-height: 400px;
   margin-top: 100px;
@@ -76,19 +76,17 @@
 .blinking {
   animation: color 1s infinite;
   animation-fill-mode: backwards;
-  color: #f66a3f;
-  /* text-shadow: 0px 8px 15px #313133; */
+  color: var(--dark-orange);
   font-size: 25px;
   min-width: 70px;
 }
 
-
 @keyframes color {
   0% {
-    color: #f66a3f;
+    color: var(--dark-red);
   }
   100% {
-    color: #313133;
+    color: var(--main-gray);
   }
 }
 
@@ -106,6 +104,8 @@
 }
 
 img {
+  max-width: 400px;
+  max-height: 300px;
   margin-top: 30px;
   border-radius: 4px;
   background-size: cover;
@@ -140,7 +140,7 @@ img {
 }
 
 .start-over:hover {
-  color: #f66a3f;
+  color: var(--dark-red);
 }
 
 @media only screen and (max-width: 600px) {

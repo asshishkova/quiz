@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
 import { FaUndo } from "react-icons/fa";
-import { useKeyPressHandler } from './keypress'
-import "./Question.css";
+import { useKeyPressHandler } from './common/keypress'
+import "./Game.css";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import _ from "underscore";
 import axios from "axios"
@@ -52,6 +52,13 @@ function buildAnswers(currentQuestion) {
 }
 
 function Question() {
+  const isMounted = useRef(false)
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => { isMounted.current = false }
+  }, []);
+
   const refAnimationInstance = useRef(null);
 
   const getInstance = useCallback((instance) => {
@@ -123,7 +130,8 @@ function Question() {
     .then(response => response.json())
     .then(response => {
       const questions = response.results;
-      if (questions.length === 0) {
+      if (questions.length === 0 || amount !== questions.length) {
+        console.log("There are not enough questions in response");
         navigate("/", location);
         return;
       }
@@ -294,13 +302,15 @@ function Question() {
   };
 
   const handleVisibilityChange = () => {
-    if (document.visibilityState === "hidden") {
-      setTimeUnfocused(new Date())
-    } else if (timeUnfocused) {
-      let newTimerValue = Math.max (
-        timer - Math.round(((new Date()).getTime() - timeUnfocused.getTime()) / 1000)
-        , 0)
-      setTimer(newTimerValue);
+    if (isMounted.current) {
+      if (document.visibilityState === "hidden") {
+        setTimeUnfocused(new Date())
+      } else if (timeUnfocused) {
+        let newTimerValue = Math.max (
+          timer - Math.round(((new Date()).getTime() - timeUnfocused.getTime()) / 1000)
+          , 0)
+        setTimer(newTimerValue);
+      }
     }
   }
 
@@ -321,7 +331,7 @@ function Question() {
   useKeyPressHandler(handler);
 
   return (
-    <div className="game">
+    <div className="app">
       {(() => {
         if (startGameCounter === 0) {
           return (

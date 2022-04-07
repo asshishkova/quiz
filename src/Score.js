@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
 import "./Score.css"
 import ReactCanvasConfetti from "react-canvas-confetti";
-import { useKeyPressHandler } from './keypress'
+import { useKeyPressHandler } from './common/keypress'
 import { StartAnimation } from './animation'
 import { GiFire } from 'react-icons/gi';
 
@@ -62,7 +62,7 @@ function Score() {
   useKeyPressHandler(handler);
 
   return (
-    <div className="game">
+    <div className="app">
       <div className="congratulations">
         <p>Hey, {location.state.playerName}!</p>
         <h1><GiFire />Your score is {location.state.score}<GiFire /></h1>

@@ -2,7 +2,7 @@
   min-width: 200px;
   min-height: 60px;
   font-size: 30px;
-  background: #f49755;
+  background: var(--main-orange);
   border: none;
   border-radius: 12px;
   outline: none;
