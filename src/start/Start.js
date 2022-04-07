@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useKeyPressHandler } from '../common/keypress'
 import { GiFire } from 'react-icons/gi';
+import { amount, secondsForAnswer, secondsBeforeHint} from '../common/common';
 import "./Start.css"
 
 const defaultDifficulty = "medium";
@@ -62,16 +63,16 @@ function Start() {
           <input type="checkbox" id="rules" />
           <h2><label htmlFor="rules">Rules</label></h2>
           <ul>
-            <li>Every time there are 10 different questions,
+            <li>Every game there are {amount} different questions,
                 for<span>&nbsp;</span>each question
                 there is<span>&nbsp;</span>only one correct answer.</li>
             <li>You can either click on<span>&nbsp;</span>the<span>&nbsp;</span>answer
                 or press its number on<span>&nbsp;</span>the<span>&nbsp;</span>keyboard.</li>
-            <li>For each question you have 30 seconds.</li>
+            <li>For each question you have {secondsForAnswer} seconds.</li>
             <li>Every right answer increases your score
                 by<span>&nbsp;</span>the<span>&nbsp;</span>amount of<span>&nbsp;</span>seconds left
                 multiplied by<span>&nbsp;</span>a<span>&nbsp;</span>difficulty factor.</li>
-            <li>After the first<span>&nbsp;</span>5 seconds passed
+            <li>After the first<span>&nbsp;</span>{secondsBeforeHint} seconds passed
                 you can get a<span>&nbsp;</span>50:50<span>&nbsp;</span>hint, but then you get
                 only half poins for<span>&nbsp;</span>this answer.</li>
           </ul>

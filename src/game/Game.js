@@ -9,13 +9,11 @@ import keyword_extractor from "keyword-extractor";
 import { useKeyPressHandler } from "../common/keypress";
 import { useOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti"
 import { canvasStyles } from "../common/confetti/canvasStyle";
-import { difficulties } from '../common/common';
+import { amount, secondsForAnswer, secondsBeforeHint, difficulties } from '../common/common';
 import "./Game.css";
 
 const defaultTimerClassName = "blinking-text-animation" ;
 const defaultAnswerClassName = "answer-card-btn regular-card";
-const amount = 10;
-const secondsForAnswer = 30;
 
 async function getQuestions(amount, difficulty) {
   return axios.get(
@@ -302,7 +300,8 @@ function Question() {
                   </p>
                   <p >
                     {timer === 0 && <p className="blinking-text-animation">Time's up</p>}
-                    {answers.length > 2 && !disabledButton && !hintUsed && timer <= secondsForAnswer - 5 && timer > 0 &&
+                    {answers.length > 2 && !disabledButton
+                      && !hintUsed && timer <= secondsForAnswer - secondsBeforeHint && timer > 0 &&
                       <button className="hint" onClick={() => hint5050()}>50:50</button>
                     }
                   </p>
