@@ -1,4 +1,60 @@
-.card-btn {
+.game {
+  padding: 0px;
+  width: 1000px;
+}
+.game-info {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+.game-info .left {
+  text-align: start;
+}
+.game-info .center {
+  text-align: center;
+}
+.game-info .right {
+  text-align: end;
+}
+
+.start-over-sign {
+  cursor: pointer;
+  font-size: 25px;
+}
+.start-over-sign:hover {
+  color: var(--dark-red);
+}
+
+.blinking-text-animation {
+  animation: color 1s infinite;
+  animation-fill-mode: backwards;
+  color: var(--dark-orange);
+  font-size: 25px;
+  min-width: 70px;
+}
+@keyframes color {
+  0% {
+    color: var(--dark-red);
+  }
+  100% {
+    color: var(--main-gray);
+  }
+}
+
+.hint {
+  cursor: pointer;
+}
+
+.answers-cards{
+  padding: 0px;
+  text-align: center;
+}
+.answer-card {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.answer-card-btn {
   font-size: 25px;
   margin: 10px;
   padding: 20px;
@@ -8,11 +64,21 @@
   border: none;
   border-radius: 12px;
 }
+.answer-card-btn:disabled {
+  cursor: default;
+  box-shadow: none !important;
+}
+.answer-card-btn:hover {
+  box-shadow: 0px 8px 15px var(--main-gray);
+}
+.answer-card-btn:active {
+  box-shadow: none;
+  background-size: 100% 100%;
+}
 
 .regular-card {
   background: linear-gradient(-45deg, var(--dark-orange), var(--main-orange));
 }
-
 .correct-card {
   background: linear-gradient(-45deg, #35a608, #69f55f);
 }
@@ -23,37 +89,12 @@
   background: linear-gradient(-45deg, var(--background-blue), var(--background-green));
 }
 
-.card-btn:disabled {
-  cursor: default;
-  box-shadow: none !important;
-}
-
 .small-numbers {
   font-size: 20px;
   font-weight: bold;
 }
 
-.card-btn:hover {
-  box-shadow: 0px 8px 15px var(--main-gray);
-}
-
-
-.card-btn:active {
-  box-shadow: none;
-  background-size: 100% 100%;
-}
-
-.cards{
-  padding: 0px;
-  text-align: center;
-}
-
-.card {
-  display: inline-block;
-  vertical-align: top;
-}
-
-.growing {
+.growing-digits-animation {
   animation: growth 1s infinite;
   animation-fill-mode: backwards;
   color: var(--dark-orange);
@@ -62,8 +103,6 @@
   line-height: 400px;
   margin-top: 100px;
 }
-
-
 @keyframes growth {
   0% {
     font-size: 40px;
@@ -73,36 +112,6 @@
   }
 }
 
-.blinking {
-  animation: color 1s infinite;
-  animation-fill-mode: backwards;
-  color: var(--dark-orange);
-  font-size: 25px;
-  min-width: 70px;
-}
-
-@keyframes color {
-  0% {
-    color: var(--dark-red);
-  }
-  100% {
-    color: var(--main-gray);
-  }
-}
-
-.question {
-  /* position: relative; */
-  padding: 0px;
-  width: 1000px;
-  /* border-radius: 12px; */
-}
-
-.answers {
-  /* position: relative; */
-  /* margin-left: 30px; */
-  padding: 0px;
-}
-
 img {
   max-width: 400px;
   max-height: 300px;
@@ -110,37 +119,6 @@ img {
   border-radius: 4px;
   background-size: cover;
   box-shadow: 0px 5px 100px #d1d1d1;
-}
-
-.game-info {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-}
-
-.left-info {
-  text-align: start;
-}
-
-.center-info {
-  text-align: center;
-}
-
-.right-info {
-  text-align: end;
-}
-
-.hint {
-  cursor: pointer;
-}
-
-.start-over {
-  cursor: pointer;
-  font-size: 25px;
-}
-
-.start-over:hover {
-  color: var(--dark-red);
 }
 
 @media only screen and (max-width: 600px) {

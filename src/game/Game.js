@@ -1,26 +1,33 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import ReactHtmlParser from 'react-html-parser';
-import { FaUndo } from "react-icons/fa";
-import { useKeyPressHandler } from './common/keypress'
-import "./Game.css";
+import ReactHtmlParser from "react-html-parser";
 import ReactCanvasConfetti from "react-canvas-confetti";
+import { FaUndo } from "react-icons/fa";
+import axios from "axios";
 import _ from "underscore";
-import axios from "axios"
 import keyword_extractor from "keyword-extractor";
+import { useKeyPressHandler } from "../common/keypress";
+import { useOneShotConfettiAnimation, canvasStyles } from "../common/confetti"
+import "./Game.css";
 
 const difficulties = {"easy": 1, "medium": 2, "hard": 3};
-const defaultTimerClassName = "blinking" ;
-const defaultAnswerClassName = "card-btn regular-card";
+const defaultTimerClassName = "blinking-text-animation" ;
+const defaultAnswerClassName = "answer-card-btn regular-card";
+const amount = 10;
+const secondsForAnswer = 30;
 
-const canvasStyles = {
-  position: "fixed",
-  pointerEvents: "none",
-  width: "100%",
-  height: "100%",
-  top: 0,
-  left: 0
-};
+async function getQuestions(amount, difficulty) {
+  return axios.get(
+    "https://opentdb.com/api.php?"
+    + "amount=" + amount
+    + "&difficulty=" + difficulty,
+    { headers: { Accept: "application/json" } })
+  .then((response) => {
+    return response.data.results;
+  }).catch((err) => {
+    return [];
+  })
+}
 
 function buildAnswers(currentQuestion) {
   const correctAnswer = {
@@ -31,8 +38,8 @@ function buildAnswers(currentQuestion) {
   };
   let answers = [];
   if (currentQuestion.type === "boolean") {
-    answers = [{text: "Yes", correct: correctAnswer.text === "True", class: defaultAnswerClassName},
-               {text: "No", correct: correctAnswer.text === "False", class: defaultAnswerClassName}];
+    answers = [{text: "Right", correct: correctAnswer.text === "True", class: defaultAnswerClassName},
+               {text: "Wrong", correct: correctAnswer.text === "False", class: defaultAnswerClassName}];
     } else {
       currentQuestion.incorrect_answers.forEach(incorrectAnswer => {
         answers.push({
@@ -52,60 +59,15 @@ function buildAnswers(currentQuestion) {
 }
 
 function Question() {
+  // useIsMounted()
   const isMounted = useRef(false)
-
   useEffect(() => {
     isMounted.current = true;
     return () => { isMounted.current = false }
   }, []);
 
-  const refAnimationInstance = useRef(null);
-
-  const getInstance = useCallback((instance) => {
-    refAnimationInstance.current = instance;
-  }, []);
-
-  const makeShot = useCallback((particleRatio, opts) => {
-    refAnimationInstance.current &&
-      refAnimationInstance.current({
-        ...opts,
-        origin: { y: 0.7 },
-        particleCount: Math.floor(200 * particleRatio)
-      });
-  }, []);
-
-  const fire = useCallback(() => {
-    makeShot(0.25, {
-      spread: 26,
-      startVelocity: 55
-    });
-
-    makeShot(0.2, {
-      spread: 60
-    });
-
-    makeShot(0.35, {
-      spread: 100,
-      decay: 0.91,
-      scalar: 0.8
-    });
-
-    makeShot(0.1, {
-      spread: 120,
-      startVelocity: 25,
-      decay: 0.92,
-      scalar: 1.2
-    });
-
-    makeShot(0.1, {
-      spread: 120,
-      startVelocity: 45
-    });
-  }, [makeShot]);
-
-  const secondsForAnswer = 30;
-
-  // process.env.REACT_APP_UNSPLASH_API_KEY
+  const navigate = useNavigate();
+  const location = useLocation();
   const [questions, setQuestions] = useState({results: []});
   const [questionIndex, setQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState({question: ""});
@@ -118,18 +80,12 @@ function Question() {
   const [score, setScore] = useState(0);
   const [imageSource, setImageSource] = useState("");
   const [timeUnfocused, setTimeUnfocused] = useState(null);
+  const oneShotConfettiAnimation = useOneShotConfettiAnimation()
 
-  const amount = 10;
-  const navigate = useNavigate();
-  const location = useLocation();
-
+  // initGameState()
   useEffect(() => {
-    fetch("/.netlify/functions/async-getquestions?"
-          + "amount=" + amount
-          + "&difficulty=" + location.state.difficulty)
-    .then(response => response.json())
-    .then(response => {
-      const questions = response.results;
+    getQuestions(amount, location.state.difficulty)
+    .then(questions => {
       if (questions.length === 0 || amount !== questions.length) {
         console.log("There are not enough questions in response");
         navigate("/", location);
@@ -146,8 +102,6 @@ function Question() {
       });
     })
   }, [location, navigate]);
-
-  // const amount = questions.length;
   let displayedPlayerName = "Guest";
   const inputPlayerName = location.state.inputPlayerName.trim();
   if (inputPlayerName.length > 0) {
@@ -160,46 +114,41 @@ function Question() {
     setTimerClassName("");
     let newScore = score;
     if (answer.correct) {
-      fire()
+      oneShotConfettiAnimation.start();
       let addPoints = timer * difficulties[currentQuestion.difficulty];
       if (hintUsed) {
         addPoints = Math.ceil(addPoints / 2);
       }
       newScore = newScore + addPoints;
       setScore(newScore);
-      updatedAnswers[answer.index].class = "card-btn correct-card";
+      updatedAnswers[answer.index].class = "answer-card-btn correct-card";
     } else if (answer.index >= 0) {
-      updatedAnswers[answer.index].class = "card-btn incorrect-card";
+      updatedAnswers[answer.index].class = "answer-card-btn incorrect-card";
     }
     setAnswers(updatedAnswers);
     const nextQuestionIndex = questionIndex + 1;
-    if (nextQuestionIndex < amount) {
-      const currentQuestion = questions[nextQuestionIndex];
-      nextImage(currentQuestion, function (imageData) {
-        setTimeout(() => {
-          if (refAnimationInstance.current) {
-            if (answer.correct) {
-              refAnimationInstance.current.reset();
-            }
-            nextQuestion(newScore, imageData);
-          }
-        }, 2000);
-      });
-    } else {
+
+    const callNextQuestionWithDelay = (imageData) => {
       setTimeout(() => {
-        if (refAnimationInstance.current) {
+        if (isMounted.current) {
           if (answer.correct) {
-            refAnimationInstance.current.reset();
+            oneShotConfettiAnimation.stop()
           }
-          nextQuestion(newScore, null);
+          nextQuestion(newScore, imageData);
         }
       }, 2000);
+    };
+
+    if (nextQuestionIndex < amount) {
+      nextImage(currentQuestion, callNextQuestionWithDelay)
+    } else {
+      callNextQuestionWithDelay(null);
     }
   }
 
   const defaultImg = "defaultImg.jpeg";
 
-  const nextImage = (question, callback) => {
+  const nextImage = async (question, callback) => {
     if (question.question) {
       const keywords =
       keyword_extractor.extract(ReactHtmlParser(question.question)[0],{
@@ -283,7 +232,7 @@ function Question() {
   const disableAnswers = (answers, indexes) => {
     indexes.forEach(index => {
       answers[index].disabled = true;
-      answers[index].class = "card-btn disabled-card";
+      answers[index].class = "answer-card-btn disabled-card";
     });
     return answers;
   }
@@ -335,35 +284,37 @@ function Question() {
       {(() => {
         if (startGameCounter === 0) {
           return (
-            <div className="question">
+            <div className="game">
               <div className="game-info">
-                <div className="left-info">
+                <div className="left">
                   <p>Player: {displayedPlayerName}</p>
-                  <p>
-                    Question {questionIndex + 1}/{amount}
-                  </p>
+                  <p> Question {questionIndex + 1}/{amount}</p>
                 </div>
-                <div className="center-info">
+                <div className="center">
                   <p>Score: {score}</p>
                   <p onAnimationIteration={onTimerAnimationIteration} className={timerClassName}>{timer}</p>
-                  <ReactCanvasConfetti refConfetti={getInstance} style={canvasStyles} />
+                  <ReactCanvasConfetti refConfetti={oneShotConfettiAnimation.instance} style={canvasStyles} />
                 </div>
-                <div className="right-info">
+                <div className="right">
                   <p>
-                    <FaUndo className="start-over" title="Start over" onClick={() => navigate("/", location)}/>
+                    <FaUndo className="start-over-sign" title="Start over" onClick={() => navigate("/", location)}/>
                   </p>
-                  {timer === 0 &&
-                    <p className="blinking" >Time's up</p>
-                  }
-                  {answers.length > 2 && !disabledButton && !hintUsed && timer <= secondsForAnswer / 2 && timer > 0 &&
-                    <p className="blinking hint" onClick={() => hint5050()}>50:50 hint</p>
-                  }
+                  <p>
+                    {timer === 0 &&
+                      <p className="blinking-text-animation" >Time's up</p>
+                    }
+                    {answers.length > 2 && !disabledButton && !hintUsed && timer <= secondsForAnswer / 2 && timer > 0 &&
+                      <p className="blinking-text-animation hint" onClick={() => hint5050()}>50:50 hint</p>
+                    }
+                  </p>
                 </div>
               </div>
+
               <h1>{ReactHtmlParser(currentQuestion.question)}</h1>
-              <ol className="cards">
+
+              <ol className="answers-cards">
                 {answers.map((answer, i) => (
-                  <li key={i} className="card">
+                  <li key={i} className="answer-card">
                     <button disabled={disabledButton || answer.disabled}
                       className={answer.class} onClick={() => answerClicked(answer)}>
                         <span className="small-numbers">{ i + 1 }.</span> {ReactHtmlParser(answer.text)}
@@ -371,12 +322,15 @@ function Question() {
                   </li>
                 ))}
               </ol>
+
               <img key={questionIndex} src={imageSource} alt=""/>
             </div>
           )
         } else {
           return (
-            <p onAnimationIteration={onAnimationIteration} className="growing">{startGameCounter}</p>
+            <p onAnimationIteration={onAnimationIteration}
+              className="growing-digits-animation">{startGameCounter}
+            </p>
           )
         }
       })()}
