@@ -148,10 +148,10 @@ function Question() {
   }, [location, navigate]);
 
   // const amount = questions.length;
-  let playerName = "Guest";
-  const stateName = location.state.name.trim();
-  if (stateName.length > 0) {
-    playerName = stateName;
+  let displayedPlayerName = "Guest";
+  const inputPlayerName = location.state.inputPlayerName.trim();
+  if (inputPlayerName.length > 0) {
+    displayedPlayerName = inputPlayerName;
   }
 
   const answerClicked = (answer) => {
@@ -248,7 +248,7 @@ function Question() {
       {state: {
         ...location.state,
         score: score,
-        playerName: playerName,
+        displayedPlayerName: displayedPlayerName,
         amount: amount,
         secondsForAnswer: secondsForAnswer
       }});
@@ -338,7 +338,7 @@ function Question() {
             <div className="question">
               <div className="game-info">
                 <div className="left-info">
-                  <p>Player: {playerName}</p>
+                  <p>Player: {displayedPlayerName}</p>
                   <p>
                     Question {questionIndex + 1}/{amount}
                   </p>

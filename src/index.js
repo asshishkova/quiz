@@ -11,7 +11,7 @@ ReactDOM.render(
     <MemoryRouter>
       <Routes>
         <Route exact path="/" element={<Start />} />
-        <Route path="/question" element={<Question />} />
+        <Route path="/game" element={<Question />} />
         <Route path="/score" element={<Score />} />
       </Routes>
     </MemoryRouter>

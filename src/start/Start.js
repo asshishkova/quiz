@@ -4,29 +4,37 @@ import { useKeyPressHandler } from '../common/keypress'
 import { GiFire } from 'react-icons/gi';
 import "./Start.css"
 
+const defaultDifficulty = "medium";
+
 function Start() {
   const navigate = useNavigate();
   const location = useLocation();
-  let initialName = "";
-  let initialDifficulty = "medium";
+
+  let currentPlayerName = "";
+  let currentDifficulty = defaultDifficulty;
+
   if (location.state) {
-    initialName = location.state.name;
-    initialDifficulty = location.state.difficulty;
+    currentPlayerName = location.state.inputPlayerName;
+    currentDifficulty = location.state.difficulty;
   }
-  const [name, setName] = useState(initialName);
-  const [difficulty, setDifficulty] = useState(initialDifficulty);
+
+  const [inputPlayerName, setInputPlayerName] = useState(currentPlayerName);
+  const [difficulty, setDifficulty] = useState(currentDifficulty);
 
   const startGame = () => {
-    navigate("/question", {state: {name: name, difficulty: difficulty}});
+    navigate("/game",{ state: {
+      inputPlayerName: inputPlayerName,
+      difficulty: difficulty}
+    });
   }
 
-  const handler = ({ key }) => {
+  const keyPressHandler = ({ key }) => {
     if (key === "Enter") {
       startGame();
     }
   };
 
-  useKeyPressHandler(handler);
+  useKeyPressHandler(keyPressHandler);
 
   return (
     <div className="app">
@@ -34,7 +42,7 @@ function Start() {
         <h1>Welcome to the Quiz!</h1>
 
         <p>Enter your name:</p>
-        <input autoFocus value={name} onChange={e => setName(e.target.value)} />
+        <input autoFocus value={inputPlayerName} onChange={e => setInputPlayerName(e.target.value)} />
 
         <p>Choose the level:</p>
         <div className="radio-button">
