@@ -60,7 +60,7 @@ function Game() {
             <li>Every right answer increases your score
                 by<span>&nbsp;</span>the<span>&nbsp;</span>amount of<span>&nbsp;</span>seconds left
                 multiplied by<span>&nbsp;</span>a<span>&nbsp;</span>difficulty factor.</li>
-            <li>If the half of<span>&nbsp;</span>the<span>&nbsp;</span>time is already passed
+            <li>If half of<span>&nbsp;</span>the<span>&nbsp;</span>time is already passed
                 you can get a<span>&nbsp;</span>50:50<span>&nbsp;</span>hint, but then you receive
                 only half of<span>&nbsp;</span>the<span>&nbsp;</span>poins for<span>&nbsp;</span>this answer.</li>
           </ul>

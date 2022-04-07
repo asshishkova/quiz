@@ -208,3 +208,9 @@ div.rules ul {
 div.rules input[type="checkbox"]:checked ~ h2 ~ ul {
   max-height: 800px;
 }
+
+@media only screen and (max-width: 600px) {
+  .radio-button label {
+    margin: 5px;
+  }
+}
