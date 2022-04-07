@@ -61,8 +61,8 @@ export function useOneShotConfettiAnimation() {
   };
 
   return {
-    start: startOneShotConfettiAnimation,
-    stop: stopAnimation,
-    instance: getInstance,
+    StartAnimation: startOneShotConfettiAnimation,
+    stopAnimation: stopAnimation,
+    getInstance: getInstance
   }
 }

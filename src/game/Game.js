@@ -8,12 +8,12 @@ import _ from "underscore";
 import keyword_extractor from "keyword-extractor";
 import { useKeyPressHandler } from "../common/keypress";
 import { useOneShotConfettiAnimation, canvasStyles } from "../common/confetti"
+import { difficulties } from '../common/common';
 import "./Game.css";
 
-const difficulties = {"easy": 1, "medium": 2, "hard": 3};
 const defaultTimerClassName = "blinking-text-animation" ;
 const defaultAnswerClassName = "answer-card-btn regular-card";
-const amount = 10;
+const amount = 1;
 const secondsForAnswer = 30;
 
 async function getQuestions(amount, difficulty) {
@@ -114,7 +114,7 @@ function Question() {
     setTimerClassName("");
     let newScore = score;
     if (answer.correct) {
-      oneShotConfettiAnimation.start();
+      oneShotConfettiAnimation.StartAnimation();
       let addPoints = timer * difficulties[currentQuestion.difficulty];
       if (hintUsed) {
         addPoints = Math.ceil(addPoints / 2);
@@ -132,7 +132,7 @@ function Question() {
       setTimeout(() => {
         if (isMounted.current) {
           if (answer.correct) {
-            oneShotConfettiAnimation.stop()
+            oneShotConfettiAnimation.stopAnimation();
           }
           nextQuestion(newScore, imageData);
         }
@@ -288,23 +288,21 @@ function Question() {
               <div className="game-info">
                 <div className="left">
                   <p>Player: {displayedPlayerName}</p>
-                  <p> Question {questionIndex + 1}/{amount}</p>
+                  <p>Question {questionIndex + 1}/{amount}</p>
                 </div>
                 <div className="center">
                   <p>Score: {score}</p>
                   <p onAnimationIteration={onTimerAnimationIteration} className={timerClassName}>{timer}</p>
-                  <ReactCanvasConfetti refConfetti={oneShotConfettiAnimation.instance} style={canvasStyles} />
+                  <ReactCanvasConfetti refConfetti={oneShotConfettiAnimation.getInstance} style={canvasStyles} />
                 </div>
                 <div className="right">
                   <p>
                     <FaUndo className="start-over-sign" title="Start over" onClick={() => navigate("/", location)}/>
                   </p>
-                  <p>
-                    {timer === 0 &&
-                      <p className="blinking-text-animation" >Time's up</p>
-                    }
-                    {answers.length > 2 && !disabledButton && !hintUsed && timer <= secondsForAnswer / 2 && timer > 0 &&
-                      <p className="blinking-text-animation hint" onClick={() => hint5050()}>50:50 hint</p>
+                  <p >
+                    {timer === 0 && <p className="blinking-text-animation">Time's up</p>}
+                    {answers.length > 2 && !disabledButton && !hintUsed && timer <= secondsForAnswer - 5 && timer > 0 &&
+                      <button className="hint" onClick={() => hint5050()}>50:50</button>
                     }
                   </p>
                 </div>

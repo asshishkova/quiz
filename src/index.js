@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Start from './start/Start.js';
 import Question from './game/Game';
-import Score from './Score';
+import Score from './score/Score';
 import * as serviceWorker from './serviceWorker';
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 

@@ -48,9 +48,10 @@ button {
 
 :root {
   --main-orange: #f49755;
+  --main-gray: #313133;
+  --main-white: #d1d1d1;
   --dark-orange: #f66a3f;
   --dark-red: #f6513f;
-  --main-gray: #313133;
   --background-blue: #23a6d5;
   --background-green: #23d5ab;
 }
