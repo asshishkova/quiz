@@ -82,14 +82,14 @@ After selecting the answer, all the answer cards become disabled and the selecte
 
 #### Score calculation
 
-Every right answer increases the score by the amount of seconds left, which is multiplied by a difficulty factor: 1 for *easy*, 2 for *medium*, 3 for *hard*. For example, if the level is *medium* and the player answered right when the time left is 20 seconds, they will get 20 * 2 = 40 points. So, the maximum score a player can get is:
-- 30 * 10 = 300 for *easy* level
-- 30 * 2 * 10 = 600 for *medium*
-- 30 * 3 * 10 = 900 for *hard*
+Every right answer increases the score by the amount of seconds left, which is multiplied by a difficulty factor: 1 for *easy*, 2 for *medium*, 3 for *hard*. For example, if the level is *medium* and the player answered right when the time left is 20 seconds, they will get $20 \times 2 = 40$ points. So, the maximum score a player can get is:
+- $30 \times 10 = 300$ for *easy* level
+- $30 \times 2 \times 10 = 600$ for *medium*
+- $30 \times 3 \times 10 = 900$ for *hard*
 
 #### 50:50 hint
 
-After the first 5 seconds passed, the player can get a 50:50 hint. If the player presses the *50:50 hint* button, two randomly chosen wrong answer cards change their color and become disabled. After that, the player can get only half of the points for the correct answer. For example, if the level is *hard* and the player answeres right after using the 50:50 hint when the time left is 10 seconds, they will get (10 * 3) / 2 = 15 points.
+After the first 5 seconds passed, the player can get a 50:50 hint. If the player presses the *50:50 hint* button, two randomly chosen wrong answer cards change their color and become disabled. After that, the player can get only half of the points for the correct answer. For example, if the level is *hard* and the player answeres right after using the 50:50 hint when the time left is 10 seconds, they will get $\frac{10 \times 3}{2} = 15$ points.
 
 #### Countdown timer features
 
@@ -102,8 +102,11 @@ The next question appears in 2 seconds after the answer (or after the time is up
 ### Final score
 
 After answering the last question, the player’s score page is presented with a celebration depending on the score:
-- Below 1/4 from maximum for this level: a small confetti animation, a "do not worry" message and a suggestion to try an easier level (if it exists).
-- From 1/4 and below 3/4: a fireworks confetti animation and a "well done" message.
-- From 3/4 and above: a fireworks confetti animation, a "wow" message and a suggestion to try a harder level (if it exists).
+
+- Below $\frac{1}{4}$ from maximum for this level: a small confetti animation, a "do not worry" message and a suggestion to try an easier level (if it exists).
+
+- From $\frac{1}{4}$ and below $\frac{3}{4}$: a fireworks confetti animation and a "well done" message.
+
+- From $\frac{3}{4}$ and above: a fireworks confetti animation, a "wow" message and a suggestion to try a harder level (if it exists).
 
 In the score page there is a button to play again. The player can either click on it or just press *Enter*. Then the start page appears again with the chosen name and level saved.
