@@ -46,7 +46,7 @@ function Start() {
         <input autoFocus value={inputPlayerName} maxLength="14"
           onChange={e => setInputPlayerName(e.target.value)} />
 
-        <p>Choose the level:</p>
+        <p>Choose the difficulty level:</p>
         <div className="radio-button">
           <input type="radio" id="easy" name="radios" value="easy"
             onChange={(e) => setDifficulty(e.target.value)} checked = {difficulty === "easy"}/>
