@@ -1,12 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
 import ReactCanvasConfetti from "react-canvas-confetti";
 import { GiFire } from 'react-icons/gi';
 import { useKeyPressHandler } from '../common/keypress';
 import { difficulties } from '../common/common';
-import { useOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti";
-import { StartEndlessConfettiAnimation } from '../common/confetti/endlessConfetti';
+import { CreateOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti";
+import { CreateEndlessConfettiAnimation } from '../common/confetti/endlessConfetti';
 import { canvasStyles } from "../common/confetti/canvasStyle";
 
 import "./Score.css";
@@ -23,32 +23,33 @@ function Score() {
   const goodFrom = maximumPoints / 4;
   const excellentFrom = maximumPoints - goodFrom;
 
-  let confettiAnimation = useOneShotConfettiAnimation()
+  let confettiAnimation = CreateOneShotConfettiAnimation()
 
   let congratulations = "";
   if (location.state.score >= excellentFrom) {
-    confettiAnimation = StartEndlessConfettiAnimation();
+    confettiAnimation = CreateEndlessConfettiAnimation();
     congratulations = "WOW! You are on top!";
     if (location.state.difficulty === "easy" || location.state.difficulty === "medium") {
       congratulations += "<br/>Try a harder level!";
     }
   } else if (location.state.score >= goodFrom) {
-    confettiAnimation = StartEndlessConfettiAnimation();
+    confettiAnimation = CreateEndlessConfettiAnimation();
     congratulations = "It's a good result, well done!";
   } else {
-    setTimeout(() => {
-      confettiAnimation.startAnimation();
-    }, 0);
     congratulations = "It's not a lot, but don't worry!";
     if (location.state.difficulty === "hard" || location.state.difficulty === "medium") {
       congratulations += "<br/>Maybe you want to<span>&nbsp;</span>try an<span>&nbsp;</span>easier level?";
     }
   }
 
-  const startOver = useCallback(() => {
+  useEffect(() => {
+    confettiAnimation.startAnimation();
+  }, [confettiAnimation]);
+
+  const startOver = () => {
     confettiAnimation.stopAnimation()
     navigate("/", location);
-  }, [confettiAnimation, navigate, location]);
+  };
 
   const handler = ({ key }) => {
     if (key === "Enter") {
@@ -66,7 +67,7 @@ function Score() {
         <p>{ReactHtmlParser(congratulations)}</p>
         <button className="orange-play-again-btn" onClick={() => startOver()}>Play again</button>
       </div>
-      {<ReactCanvasConfetti fire={true} refConfetti={confettiAnimation.getInstance} style={canvasStyles} />}
+      <ReactCanvasConfetti refConfetti={confettiAnimation.getInstance} style={canvasStyles} />
     </div>
   );
 }

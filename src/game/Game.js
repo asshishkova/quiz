@@ -7,7 +7,7 @@ import axios from "axios";
 import _ from "underscore";
 import keyword_extractor from "keyword-extractor";
 import { useKeyPressHandler } from "../common/keypress";
-import { useOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti"
+import { CreateOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti"
 import { canvasStyles } from "../common/confetti/canvasStyle";
 import { amount, secondsForAnswer, secondsBeforeHint, difficulties } from '../common/common';
 import "./Game.css";
@@ -79,7 +79,7 @@ function Question() {
   const [score, setScore] = useState(0);
   const [imageSource, setImageSource] = useState("");
   const [timeUnfocused, setTimeUnfocused] = useState(null);
-  const oneShotConfettiAnimation = useOneShotConfettiAnimation()
+  const oneShotConfettiAnimation = CreateOneShotConfettiAnimation()
 
   // initGameState()
   useEffect(() => {

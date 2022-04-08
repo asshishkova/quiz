@@ -18,7 +18,7 @@ function getAnimationSettings(originXA, originXB) {
   };
 }
 
-export function StartEndlessConfettiAnimation() {
+export function CreateEndlessConfettiAnimation() {
   const refAnimationInstance = useRef(null);
   const [intervalId, setIntervalId] = useState();
 
@@ -45,13 +45,20 @@ export function StartEndlessConfettiAnimation() {
     };
   }, [intervalId]);
 
-  const stopAnimation = () => {
+  const startAnimation = useCallback(() => {
+    if (!intervalId) {
+      setIntervalId(setInterval(nextTickAnimation, 400));
+    }
+  }, [intervalId, nextTickAnimation]);
+
+  const stopAnimation = useCallback(() => {
     clearInterval(intervalId);
     setIntervalId(null);
     refAnimationInstance.current && refAnimationInstance.current.reset();
-  }
+  }, [intervalId]);
 
   return {
+    startAnimation: startAnimation,
     stopAnimation: stopAnimation,
     getInstance: getInstance
   }

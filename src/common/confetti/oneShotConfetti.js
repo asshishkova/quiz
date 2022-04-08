@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 
-export function useOneShotConfettiAnimation() {
+export function CreateOneShotConfettiAnimation() {
   const refAnimationInstance = useRef(null);
 
   const getInstance = useCallback((instance) => {
@@ -16,7 +16,7 @@ export function useOneShotConfettiAnimation() {
       });
   }, []);
 
-  const startOneShotConfettiAnimation = useCallback(() => {
+  const startAnimation = useCallback(() => {
     makeShot(0.25, {
       spread: 26,
       startVelocity: 55
@@ -45,14 +45,14 @@ export function useOneShotConfettiAnimation() {
     });
   }, [makeShot]);
 
-  const stopAnimation = () => {
+  const stopAnimation = useCallback(() => {
     if (refAnimationInstance.current) {
       refAnimationInstance.current.reset();
     }
-  };
+  }, []);
 
   return {
-    startAnimation: startOneShotConfettiAnimation,
+    startAnimation: startAnimation,
     stopAnimation: stopAnimation,
     getInstance: getInstance
   }
