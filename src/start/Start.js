@@ -43,7 +43,8 @@ function Start() {
         <h1>Welcome to the Quiz!</h1>
 
         <p>Enter your name:</p>
-        <input autoFocus value={inputPlayerName} onChange={e => setInputPlayerName(e.target.value)} />
+        <input autoFocus value={inputPlayerName} maxLength="14"
+          onChange={e => setInputPlayerName(e.target.value)} />
 
         <p>Choose the level:</p>
         <div className="radio-button">

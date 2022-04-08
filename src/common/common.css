@@ -29,6 +29,7 @@ body {
   font-family: 'Saira', sans-serif;
   display: flex;
   justify-content: center;
+  word-wrap: break-word;
 }
 
 h1 {
