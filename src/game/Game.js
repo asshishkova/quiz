@@ -298,8 +298,8 @@ function Question() {
                   <p>
                     <FaUndo className="start-over-sign" title="Start over" onClick={() => navigate("/", location)}/>
                   </p>
-                  <p >
-                    {timer === 0 && <p className="blinking-text-animation">Time's up</p>}
+                  <p>
+                    {timer === 0 && <span className="blinking-text-animation">Time's up</span>}
                     {answers.length > 2 && !disabledButton
                       && !hintUsed && timer <= secondsForAnswer - secondsBeforeHint && timer > 0 &&
                       <button className="hint" onClick={() => hint5050()}>50:50</button>

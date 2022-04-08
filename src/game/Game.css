@@ -20,6 +20,7 @@
 .start-over-sign {
   cursor: pointer;
   font-size: 25px;
+  text-align: center;
 }
 .start-over-sign:hover {
   color: var(--dark-red);
@@ -136,4 +137,8 @@ img {
     max-width: 300px;
     margin-bottom: 40px;
   }
+  .hint, .start-over-sign {
+    width: 80px;
+  }
+
 }
