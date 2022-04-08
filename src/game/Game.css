@@ -140,5 +140,7 @@ img {
   .hint, .start-over-sign {
     width: 80px;
   }
-
+  .answer-card-btn {
+    width: 300px;
+  }
 }

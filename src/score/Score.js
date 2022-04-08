@@ -4,7 +4,7 @@ import ReactHtmlParser from 'react-html-parser';
 import ReactCanvasConfetti from "react-canvas-confetti";
 import { GiFire } from 'react-icons/gi';
 import { useKeyPressHandler } from '../common/keypress';
-import { difficulties } from '../common/common';
+import * as common from '../common/common';
 import { CreateOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti";
 import { CreateEndlessConfettiAnimation } from '../common/confetti/endlessConfetti';
 import { canvasStyles } from "../common/confetti/canvasStyle";
@@ -18,7 +18,7 @@ function Score() {
 
   const maximumPoints = location.state.amount
                         * location.state.secondsForAnswer
-                        * difficulties[location.state.difficulty];
+                        * common.difficulties[location.state.difficulty];
 
   const goodFrom = maximumPoints / 4;
   const excellentFrom = maximumPoints - goodFrom;

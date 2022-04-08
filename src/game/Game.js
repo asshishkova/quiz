@@ -9,11 +9,12 @@ import keyword_extractor from "keyword-extractor";
 import { useKeyPressHandler } from "../common/keypress";
 import { CreateOneShotConfettiAnimation } from "../common/confetti/oneShotConfetti"
 import { canvasStyles } from "../common/confetti/canvasStyle";
-import { amount, secondsForAnswer, secondsBeforeHint, difficulties } from '../common/common';
+import * as common from '../common/common';
 import "./Game.css";
 
 const defaultTimerClassName = "blinking-text-animation" ;
-const defaultAnswerClassName = "answer-card-btn regular-card";
+const defaultAnswerClassName = "regular-card";
+const defaultImg = "defaultImg.jpeg";
 
 async function getQuestions(amount, difficulty) {
   return axios.get(
@@ -47,7 +48,7 @@ function buildAnswers(currentQuestion) {
           class: defaultAnswerClassName
         });
       });
-      const correctAnswerIndex = Math.floor(Math.random() * answers.length)
+      const correctAnswerIndex = Math.floor(Math.random() * answers.length);
       answers.splice(correctAnswerIndex, 0, correctAnswer);
     }
 
@@ -57,8 +58,7 @@ function buildAnswers(currentQuestion) {
   return answers;
 }
 
-function Question() {
-  // useIsMounted()
+function Game() {
   const isMounted = useRef(false)
   useEffect(() => {
     isMounted.current = true;
@@ -67,25 +67,30 @@ function Question() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [startGameCounter, setStartGameCounter] = useState(3);
   const [questions, setQuestions] = useState({results: []});
   const [questionIndex, setQuestionIndex] = useState(0);
+
   const [currentQuestion, setCurrentQuestion] = useState({question: ""});
   const [answers, setAnswers] = useState([]);
-  const [startGameCounter, setStartGameCounter] = useState(3);
-  const [timer, setTimer] = useState(secondsForAnswer);
+
+  const [timer, setTimer] = useState(common.secondsForAnswer);
+  const [timeUnfocused, setTimeUnfocused] = useState(null);
   const [timerClassName, setTimerClassName] = useState(defaultTimerClassName);
-  const [disabledButton, setDisabledButton] = useState(false);
+
+  const [disabledButtons, setDisabledButtons] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [score, setScore] = useState(0);
-  const [imageSource, setImageSource] = useState("");
-  const [timeUnfocused, setTimeUnfocused] = useState(null);
-  const oneShotConfettiAnimation = CreateOneShotConfettiAnimation()
 
-  // initGameState()
+  const [imageSource, setImageSource] = useState("");
+  const oneShotConfettiAnimation = CreateOneShotConfettiAnimation();
+
+  // initialize game state
   useEffect(() => {
-    getQuestions(amount, location.state.difficulty)
+    getQuestions(common.amountOfQuestions, location.state.difficulty)
     .then(questions => {
-      if (questions.length === 0 || amount !== questions.length) {
+      if (questions.length === 0 || common.amountOfQuestions !== questions.length) {
         console.log("There are not enough questions in response");
         navigate("/", location);
         return;
@@ -101,6 +106,7 @@ function Question() {
       });
     })
   }, [location, navigate]);
+
   let displayedPlayerName = "Guest";
   const inputPlayerName = location.state.inputPlayerName.trim();
   if (inputPlayerName.length > 0) {
@@ -108,22 +114,23 @@ function Question() {
   }
 
   const answerClicked = (answer) => {
-    setDisabledButton(true);
+    setDisabledButtons(true);
     let updatedAnswers = answers.slice();
-    setTimerClassName("");
     let newScore = score;
+    setTimerClassName("");
     if (answer.correct) {
       oneShotConfettiAnimation.startAnimation();
-      let addPoints = timer * difficulties[currentQuestion.difficulty];
+      let addPoints = timer * common.difficulties[currentQuestion.difficulty];
       if (hintUsed) {
         addPoints = Math.ceil(addPoints / 2);
       }
-      newScore = newScore + addPoints;
+      newScore += addPoints;
       setScore(newScore);
-      updatedAnswers[answer.index].class = "answer-card-btn correct-card";
+      updatedAnswers[answer.index].class = "correct-card";
     } else if (answer.index >= 0) {
-      updatedAnswers[answer.index].class = "answer-card-btn incorrect-card";
+      updatedAnswers[answer.index].class = "incorrect-card";
     }
+
     setAnswers(updatedAnswers);
     const nextQuestionIndex = questionIndex + 1;
 
@@ -135,35 +142,33 @@ function Question() {
           }
           nextQuestion(newScore, imageData);
         }
-      }, 2000);
+      }, common.delayBetweenQuestions);
     };
 
-    if (nextQuestionIndex < amount) {
-      nextImage(currentQuestion, callNextQuestionWithDelay)
+    if (nextQuestionIndex < common.amountOfQuestions) {
+      nextImage(questions[nextQuestionIndex], callNextQuestionWithDelay)
     } else {
       callNextQuestionWithDelay(null);
     }
   }
 
-  const defaultImg = "defaultImg.jpeg";
-
-  const nextImage = async (question, callback) => {
-    if (question.question) {
-      const keywords =
-      keyword_extractor.extract(ReactHtmlParser(question.question)[0],{
+  const nextImage = async (nextQuestion, callback) => {
+    if (nextQuestion.question) {
+      let keywords =
+      keyword_extractor.extract(ReactHtmlParser(nextQuestion.question)[0], {
           language:"english",
           remove_digits: true,
           return_changed_case: true,
           remove_duplicates: true
       });
       const startKeyword = Math.ceil(keywords.length / 2);
+      keywords = keywords.slice(startKeyword - 1, startKeyword + 2);
       const unsplashUrl = "https://api.unsplash.com/search/photos?query="
-                      + encodeURI(keywords.slice(startKeyword - 1, startKeyword + 2).join(" "))
+                      + encodeURIComponent(keywords.join(" "))
                       + "&client_id=" + process.env.REACT_APP_UNSPLASH_API_KEY
                       + "&per_page=1&orientation=landscape";
 
-      return axios.get(
-        unsplashUrl,
+      return axios.get(unsplashUrl,
         { headers: { Accept: "application/json" } }
       )
       .then((response) => {
@@ -178,7 +183,7 @@ function Question() {
         } else {
           callback(defaultImg);
         }
-      }).catch((err) => {
+      }).catch(() => {
         console.log("Unsplash API has reached its rate limit. Replacing with the default image.")
         callback(defaultImg);
       })
@@ -186,37 +191,45 @@ function Question() {
   }
 
   const nextQuestion = (score, imageData) => {
-    setDisabledButton(false);
+    setDisabledButtons(false);
     setHintUsed(false);
-    setTimer(secondsForAnswer);
+    setTimer(common.secondsForAnswer);
     setTimerClassName(defaultTimerClassName);
     const nextQuestionIndex = questionIndex + 1;
-    if (nextQuestionIndex === amount) {
+    if (nextQuestionIndex === common.amountOfQuestions) {
       navigate("/score",
       {state: {
         ...location.state,
         score: score,
         displayedPlayerName: displayedPlayerName,
-        amount: amount,
-        secondsForAnswer: secondsForAnswer
+        amount: common.amountOfQuestions,
+        secondsForAnswer: common.secondsForAnswer
       }});
     } else {
-      const currentQuestion = questions[nextQuestionIndex];
-      const answers = buildAnswers(currentQuestion);
-      setCurrentQuestion(currentQuestion);
+      const nextQuestion = questions[nextQuestionIndex];
+      const answers = buildAnswers(nextQuestion);
+      setCurrentQuestion(nextQuestion);
       setImageSource(imageData);
       setAnswers(answers);
       setQuestionIndex(nextQuestionIndex);
     }
   }
 
+  const disableAnswers = (answers, indexes) => {
+    indexes.forEach(index => {
+      answers[index].disabled = true;
+      answers[index].class = "disabled-card";
+    });
+    return answers;
+  }
+
   const hint5050 = () => {
     setHintUsed(true);
     let updatedAnswers = answers.slice();
-    const indexes = [...Array(answers.length).keys()];
+    const indexes = common.createArrayOfIndexes(answers);
     const halfIndexes = _.sample(indexes, answers.length  / 2);
     const restIndexes = indexes.filter(i => !halfIndexes.includes(i));
-    let isCorrectHalfIndexes = []
+    let isCorrectHalfIndexes = [];
     halfIndexes.forEach(index => {
       isCorrectHalfIndexes.push(updatedAnswers[index].correct);
     });
@@ -228,15 +241,7 @@ function Question() {
     setAnswers(updatedAnswers);
   }
 
-  const disableAnswers = (answers, indexes) => {
-    indexes.forEach(index => {
-      answers[index].disabled = true;
-      answers[index].class = "answer-card-btn disabled-card";
-    });
-    return answers;
-  }
-
-  const onAnimationIteration = () => {
+  const onStartTimerAnimationIteration = () => {
     setStartGameCounter(startGameCounter - 1);
   };
 
@@ -255,8 +260,8 @@ function Question() {
         setTimeUnfocused(new Date())
       } else if (timeUnfocused) {
         let newTimerValue = Math.max (
-          timer - Math.round(((new Date()).getTime() - timeUnfocused.getTime()) / 1000)
-          , 0)
+          timer - Math.round(((new Date()).getTime() - timeUnfocused.getTime()) / 1000),
+          0)
         setTimer(newTimerValue);
       }
     }
@@ -266,17 +271,17 @@ function Question() {
     document.addEventListener("visibilitychange", handleVisibilityChange, false);
   });
 
-  const handler = ({ key }) => {
-    if (!disabledButton) {
+  const keyPressHandler = ({ key }) => {
+    if (!disabledButtons) {
       const parsedKey = parseInt(key) - 1;
-      const keys = [...Array(answers.length).keys()];
+      const keys = common.createArrayOfIndexes(answers);
       if (keys.includes(parsedKey) && !answers[parsedKey].disabled) {
         answerClicked(answers[parsedKey]);
       }
     }
   };
 
-  useKeyPressHandler(handler);
+  useKeyPressHandler(keyPressHandler);
 
   return (
     <div className="app">
@@ -287,7 +292,7 @@ function Question() {
               <div className="game-info">
                 <div className="left">
                   <p>Player: {displayedPlayerName}</p>
-                  <p>Question {questionIndex + 1}/{amount}</p>
+                  <p>Question {questionIndex + 1}/{common.amountOfQuestions}</p>
                 </div>
                 <div className="center">
                   <p>Score: {score}</p>
@@ -300,8 +305,8 @@ function Question() {
                   </p>
                   <p>
                     {timer === 0 && <span className="blinking-text-animation">Time's up</span>}
-                    {answers.length > 2 && !disabledButton
-                      && !hintUsed && timer <= secondsForAnswer - secondsBeforeHint && timer > 0 &&
+                    {answers.length > 2 && !disabledButtons && !hintUsed &&
+                    timer <= common.secondsForAnswer - common.secondsBeforeHint && timer > 0 &&
                       <button className="hint" onClick={() => hint5050()}>50:50</button>
                     }
                   </p>
@@ -313,8 +318,8 @@ function Question() {
               <ol className="answers-cards">
                 {answers.map((answer, i) => (
                   <li key={i} className="answer-card">
-                    <button disabled={disabledButton || answer.disabled}
-                      className={answer.class} onClick={() => answerClicked(answer)}>
+                    <button disabled={disabledButtons || answer.disabled}
+                      className={"answer-card-btn " + answer.class} onClick={() => answerClicked(answer)}>
                         <span className="small-numbers">{ i + 1 }.</span> {ReactHtmlParser(answer.text)}
                     </button>
                   </li>
@@ -326,7 +331,7 @@ function Question() {
           )
         } else {
           return (
-            <p onAnimationIteration={onAnimationIteration}
+            <p onAnimationIteration={onStartTimerAnimationIteration}
               className="growing-digits-animation">{startGameCounter}
             </p>
           )
@@ -336,4 +341,4 @@ function Question() {
   )
 }
 
-export default Question;
+export default Game;
