@@ -1,6 +1,6 @@
 # Quiz game
 
-Live URL: quizgame-asshishkova.netlify.app
+Live URL: [quizgame-asshishkova.netlify.app](https://quizgame-asshishkova.netlify.app/)
 
 This web application manages the quiz game using the [Open Trivia Database API](https://opentdb.com/). In every game there are 10 different questions with 2 or 4 possible answers. For each question there is only one correct answer. The time to answer is limited to 30 seconds. The player’s goal is to answer all the questions as quickly and accurately as possible.
 
